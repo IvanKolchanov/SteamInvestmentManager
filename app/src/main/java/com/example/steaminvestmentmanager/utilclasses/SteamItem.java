@@ -5,11 +5,15 @@ import android.graphics.Bitmap;
 public class SteamItem {
     private String market_hash_name;
     private String median_price;
+    private String itemIconURL;
+    private String currency;
+    private String appid;
     private Bitmap itemIcon;
 
-    public SteamItem(String market_hash_name, String median_price, Bitmap itemIcon) {
+    public SteamItem(String market_hash_name, String appid, String itemIconURL, Bitmap itemIcon) {
         this.market_hash_name = market_hash_name;
-        this.median_price = median_price;
+        this.appid = appid;
+        this.itemIconURL = itemIconURL;
         this.itemIcon = itemIcon;
     }
 
@@ -23,5 +27,9 @@ public class SteamItem {
 
     public Bitmap getItemIcon() {
         return itemIcon;
+    }
+
+    public void setItemIcon(Bitmap itemIcon) {
+        this.itemIcon = itemIcon;
     }
 }

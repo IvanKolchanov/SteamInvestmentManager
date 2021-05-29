@@ -7,7 +7,7 @@ import java.net.URLConnection;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
-public class DownloadingPageHtmlCode extends Thread {
+public class DownloadingPageHtmlCode implements Callable<String> {
     private String htmlPageUrl;
     private String content;
 
@@ -16,19 +16,18 @@ public class DownloadingPageHtmlCode extends Thread {
     }
 
     @Override
-    public void run(){
+    public String call(){
         content = null;
         URLConnection connection = null;
         try {
-            connection =  new URL("https://steamcommunity.com/market/listings/730/Snakebite%20Case").openConnection();
+            connection =  new URL(htmlPageUrl).openConnection();
             Scanner scanner = new Scanner(connection.getInputStream());
             scanner.useDelimiter("\\Z");
             content = scanner.next();
             scanner.close();
-
         }catch ( Exception ex ) {
             ex.printStackTrace();
         }
-        MainActivity.setContent(content);
+        return content;
     }
 }

@@ -1,23 +1,45 @@
 package com.example.steaminvestmentmanager;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
 import com.google.gson.*;
+import android.app.Activity;
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.*;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.ContextThemeWrapper;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import com.example.steaminvestmentmanager.utilclasses.*;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private static String content;
-    private ArrayList<SteamItem> steamItems = new ArrayList<>();
+    private static ArrayList<SteamItem> steamItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initializeSteamItems();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSteamItemsFromPreference();
+        ItemsUpdatingThread itemsUpdatingThread = new ItemsUpdatingThread();
+        itemsUpdatingThread.start();
     }
 
     @Override
@@ -30,18 +52,63 @@ public class MainActivity extends AppCompatActivity {
         super.onPostResume();
     }
 
-    public static void setContent(String content) {
-        MainActivity.content = content;
-        System.out.println(content);
-    }
-
     @Override
     protected void onStop() {
         super.onStop();
         saveSteamItems();
     }
 
-    private void initializeSteamItems() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.user_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.open_menu:
+                showPopupMenu(findViewById(R.id.open_menu));
+                break;
+        }
+        return true;
+    }
+
+    private void showPopupMenu(View v) {
+        Context wrapper = new ContextThemeWrapper(getApplicationContext(), R.style.popupMenuStyle);
+        PopupMenu popupMenu = new PopupMenu(wrapper, v);
+        popupMenu.inflate(R.menu.user_popup_menu);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()){
+                    case R.id.add_steamItem:
+                        EnteringURLDialog enteringURLDialog = new EnteringURLDialog();
+                        enteringURLDialog.show(getSupportFragmentManager(), null);
+                }
+                return true;
+            }
+        });
+        popupMenu.show();
+    }
+
+    public static void sendEnteredURL(String enteredURL) {
+        ItemAddingThread itemAddingThread = new ItemAddingThread(enteredURL);
+    }
+
+    public static void sendSteamItem(SteamItem addingSteamItem) {
+        steamItems.add(addingSteamItem);
+    }
+
+    public static SteamItem[] getSteamItems() {
+        SteamItem[] steamItems = null;
+        if (steamItems != null) {
+            MainActivity.steamItems.toArray(steamItems);
+            return steamItems;
+        }else return null;
+    }
+
+    private void getSteamItemsFromPreference() {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         Gson gson = new Gson();
         int steamItemLength = sharedPreferences.getInt("0", 0);
@@ -58,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor preferenceEditor = sharedPreferences.edit();
         Gson gson = new Gson();
         for (int i = 1; i <= steamItems.size(); i++) {
+            steamItems.get(i-1).setItemIcon(null);
             String itemJson = gson.toJson(steamItems.get(i-1));
             preferenceEditor.putString(Integer.toString(i), itemJson);
         }
