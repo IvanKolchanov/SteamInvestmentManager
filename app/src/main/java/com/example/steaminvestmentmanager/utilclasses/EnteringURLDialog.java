@@ -1,5 +1,8 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +11,13 @@ import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.steaminvestmentmanager.MainActivity;
 import com.example.steaminvestmentmanager.R;
+
+import org.w3c.dom.EntityReference;
 
 public class EnteringURLDialog extends DialogFragment {
     @Nullable
@@ -31,6 +37,7 @@ public class EnteringURLDialog extends DialogFragment {
                 dismiss();
             }
         });
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         return v;
     }
 }

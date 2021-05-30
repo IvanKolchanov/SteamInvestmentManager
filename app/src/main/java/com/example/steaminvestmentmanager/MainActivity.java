@@ -37,8 +37,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSteamItemsFromPreference();
+        //getSteamItemsFromPreference();
+        //steamItems.add(new SteamItem("Snakebite Case", "730", "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU4naLOJzgUuYqyzIaIxa6jMOLXxGkHvcMjibmU99Sg3Qaw-hA_ZWrzLISLMlhpgJJUhGE"));
+        ItemAddingThread itemAddingThread = new ItemAddingThread("https://steamcommunity.com/market/listings/730/SG%20553%20%7C%20Heavy%20Metal%20%28Battle-Scarred%29?filter=-%20Link");
         ItemsUpdatingThread itemsUpdatingThread = new ItemsUpdatingThread();
+        itemAddingThread.start();
         itemsUpdatingThread.start();
     }
 
@@ -55,6 +58,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         saveSteamItems();
     }
 
@@ -101,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static SteamItem[] getSteamItems() {
-        SteamItem[] steamItems = null;
-        if (steamItems != null) {
-            MainActivity.steamItems.toArray(steamItems);
-            return steamItems;
+        if (MainActivity.steamItems != null) {
+            SteamItem[] steamItemsArray = null;
+            steamItemsArray = MainActivity.steamItems.toArray(new SteamItem[0]);
+            return steamItemsArray;
         }else return null;
     }
 
@@ -124,12 +132,14 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor preferenceEditor = sharedPreferences.edit();
         Gson gson = new Gson();
-        for (int i = 1; i <= steamItems.size(); i++) {
-            steamItems.get(i-1).setItemIcon(null);
-            String itemJson = gson.toJson(steamItems.get(i-1));
-            preferenceEditor.putString(Integer.toString(i), itemJson);
+        if (steamItems != null) {
+            for (int i = 1; i <= steamItems.size(); i++) {
+                steamItems.get(i - 1).setItemIcon(null);
+                String itemJson = gson.toJson(steamItems.get(i - 1));
+                preferenceEditor.putString(Integer.toString(i), itemJson);
+            }
+            preferenceEditor.putInt("0", steamItems.size());
         }
-        preferenceEditor.putInt("0", steamItems.size());
         preferenceEditor.apply();
     }
 }

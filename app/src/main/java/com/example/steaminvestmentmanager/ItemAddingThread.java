@@ -40,21 +40,23 @@ public class ItemAddingThread extends Thread{
         appid = urlArray[5];
         Scanner cin = new Scanner(content);
         int counter = 1;
-        while (counter != 605) {
-            cin.nextLine();
+        boolean isFound = false;
+        String g_rgAssetsLine = "";
+        while (!isFound && cin.hasNext()) {
+            String currentRow = cin.nextLine();
+            String[] currentRowArray = currentRow.split(" ");
+            if (currentRowArray.length > 1) {
+                if (currentRowArray[1].equals("g_rgAssets")) {
+                    g_rgAssetsLine = currentRow;
+                    isFound = true;
+                }
+            }
             counter++;
         }
-        String g_rgAssetsLine = cin.nextLine();
         cin.close();
         char[] g_rgAssetsLineArray = g_rgAssetsLine.toCharArray();
         processRgAssets(g_rgAssetsLineArray);
-        DownloadBitmapImage downloadBitmapImage = new DownloadBitmapImage(icon_url, "/48fx48f");
-        try {
-            steamItemIcon = downloadBitmapImage.call();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        addingItem = new SteamItem(market_hash_name, appid, icon_url, steamItemIcon);
+        addingItem = new SteamItem(market_hash_name, appid, icon_url);
         MainActivity.sendSteamItem(addingItem);
     }
 
@@ -102,6 +104,5 @@ public class ItemAddingThread extends Thread{
                 }
             }
         }
-        System.out.println(market_hash_name + " " + icon_url);
     }
 }

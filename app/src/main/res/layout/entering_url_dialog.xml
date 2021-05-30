@@ -4,44 +4,76 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/black">
+        android:background="@drawable/entering_url_dialog_round_corners">
 
         <TextView
+            android:layout_marginTop="3dp"
             android:layout_width="272dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:text="Добавление предмета"
             android:textColor="@color/white"
             android:gravity="center_horizontal"
-            android:textSize="22sp" />
+            android:textSize="22sp"/>
         <EditText
             android:layout_marginTop="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
             android:layout_width="272dp"
             android:layout_height="wrap_content"
-            android:hint="Введите ссылку на лот"
-            android:background="@color/black"
-            android:textColorHint="@color/white"
+            android:hint="Cсылка на лот"
+            android:background="@drawable/edt_bg_selector"
+            android:textColorHint="@color/gray"
             android:textColor="@color/white"
             android:id="@+id/entered_url"
-            android:gravity="center_horizontal"
+            android:gravity="left"
             android:textSize="17sp"/>
+        <EditText
+            android:background="@drawable/edt_bg_selector"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_width="272dp"
+            android:layout_height="wrap_content"
+            android:hint="Стоимость предмета"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/white"
+            android:id="@+id/entered_price"
+            android:gravity="left"
+            android:textSize="17sp"/>
+        <EditText
+            android:background="@drawable/edt_bg_selector"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_width="272dp"
+            android:layout_height="wrap_content"
+            android:hint="Количество"
+            android:textColorHint="@color/gray"
+            android:textColor="@color/white"
+            android:id="@+id/entered_amount"
+            android:gravity="left"
+            android:textSize="17sp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+
             <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/accept_dialog_button"
-                style="@style/WhiteBorderlessButton"
-                android:text="Принять"/>
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/cancel_dialog_button"
                 style="@style/WhiteBorderlessButton"
-                android:text="Отменить"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Отменить" />
+
+            <Button
+                android:id="@+id/accept_dialog_button"
+                style="@style/WhiteBorderlessButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Принять" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

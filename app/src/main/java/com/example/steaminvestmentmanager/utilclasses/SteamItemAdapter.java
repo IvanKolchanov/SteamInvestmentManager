@@ -31,6 +31,7 @@ public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
         itemName.setText(steamItem.getMarket_hash_name());
         TextView itemPercent = (TextView) convertView.findViewById(R.id.itemPercent);
+
         return convertView;
     }
 }
