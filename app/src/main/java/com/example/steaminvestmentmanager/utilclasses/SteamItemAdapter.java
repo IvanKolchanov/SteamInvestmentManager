@@ -1,5 +1,6 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,8 +11,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.example.steaminvestmentmanager.R;
+
+import java.math.BigDecimal;
 
 public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
 
@@ -31,7 +35,38 @@ public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
         itemName.setText(steamItem.getMarket_hash_name());
         TextView itemPercent = (TextView) convertView.findViewById(R.id.itemPercent);
-
+        float starterPrice = Integer.parseInt(steamItem.getStarterPrice());
+        String lowest_price = steamItem.getLowest_price();
+        lowest_price = lowest_price.replace(CurrencyData.getCurrencyChar(), "");
+        lowest_price = lowest_price.replace(",", ".");
+        lowest_price = lowest_price.replace(" ", "");
+        float currentPrice = Float.parseFloat(lowest_price);
+        float percentage = currentPrice/starterPrice;
+        char[] percentageString = Float.toString(percentage).toCharArray();
+        String percentageStringWithTwoNumbers = "";
+        int counter = 0, haveSeenDot = 0;
+        for (int i = 0; i < percentageString.length; i++) {
+            if (percentageString[i] != '.') {
+                if (haveSeenDot == 0) {
+                    percentageStringWithTwoNumbers += Character.toString(percentageString[i]);
+                }else if (counter < 3) {
+                    percentageStringWithTwoNumbers += Character.toString(percentageString[i]);
+                    counter++;
+                }else {
+                    break;
+                }
+            }else {
+                percentageStringWithTwoNumbers += ".";
+                haveSeenDot = 1;
+            }
+        }
+        int finalPercentage = Math.round(Float.parseFloat(percentageStringWithTwoNumbers)  * 100);
+        itemPercent.setText(Integer.toString(finalPercentage) + "%");
+        if (finalPercentage > 100) {
+            itemPercent.setTextColor(ContextCompat.getColor(getContext(), R.color.green));
+        }else {
+            itemPercent.setTextColor(ContextCompat.getColor(getContext(), R.color.red));
+        }
         return convertView;
     }
 }

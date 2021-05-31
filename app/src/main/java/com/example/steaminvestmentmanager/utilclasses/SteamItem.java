@@ -6,21 +6,20 @@ public class SteamItem {
     private String market_hash_name;
     private String lowest_price;
     private String itemIconURL;
-    private String currency;
     private String appid;
     private Bitmap itemIcon;
     private String starterPrice;
     private int amount;
-    private SteamGetURLCreator steamGetURLCreator = new SteamGetURLCreator();
-    private String firstInitializationPrice;
     private int firstInitializationCurrency;
     private String firstInitializationCurrencyMedianPrice;
 
-    public SteamItem(String market_hash_name, String appid, String itemIconURL) {
+    public SteamItem(String market_hash_name, String appid, String itemIconURL, String enteredPrice, String enteredAmount) {
         this.market_hash_name = market_hash_name;
         this.appid = appid;
         this.itemIconURL = itemIconURL;
-        this.itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/48fx48").call();
+        this.itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/160fx160").call();
+        this.starterPrice = enteredPrice;
+        this.amount = Integer.parseInt(enteredAmount);
         firstInitializationCurrency = CurrencyData.getCurrency();
     }
 
@@ -64,10 +63,29 @@ public class SteamItem {
         return firstInitializationCurrencyMedianPrice;
     }
 
+    public String getStarterPrice() {
+        return starterPrice;
+    }
+
+    public boolean checkForBeingFull() {
+        if ((market_hash_name != null) && (itemIconURL != null) && (appid != null) && (starterPrice != null)) {
+            if ((!market_hash_name.equals("") && (!itemIconURL.equals("")) && (!appid.equals("")) && (!starterPrice.equals("")) && (amount >= 0) && (firstInitializationCurrency >= 0))) {
+                return true;
+            }else {
+                return false;
+            }
+        }else {
+            return false;
+        }
+    }
+
     @Override
     public String toString() {
         return market_hash_name + "\n" +
                 itemIconURL + "\n" +
-                appid;
+                appid + "\n" +
+                starterPrice + "\n" +
+                amount + "\n" +
+                firstInitializationCurrency;
     }
 }

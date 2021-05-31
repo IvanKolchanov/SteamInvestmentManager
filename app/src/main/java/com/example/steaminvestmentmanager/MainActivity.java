@@ -13,23 +13,34 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.*;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.steaminvestmentmanager.utilclasses.*;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private static ArrayList<SteamItem> steamItems = new ArrayList<>();
+    private ListView steamItemsListView;
+    private MainActivity mainActivity = this;
+    private SteamItemAdapter steamItemAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +48,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //getSteamItemsFromPreference();
-        //steamItems.add(new SteamItem("Snakebite Case", "730", "https://community.cloudflare.steamstatic.com/economy/image/-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsUFJ5KBFZv668FFU4naLOJzgUuYqyzIaIxa6jMOLXxGkHvcMjibmU99Sg3Qaw-hA_ZWrzLISLMlhpgJJUhGE"));
-        ItemAddingThread itemAddingThread = new ItemAddingThread("https://steamcommunity.com/market/listings/730/SG%20553%20%7C%20Heavy%20Metal%20%28Battle-Scarred%29?filter=-%20Link");
-        ItemsUpdatingThread itemsUpdatingThread = new ItemsUpdatingThread();
-        itemAddingThread.start();
+        steamItemsListView = (ListView) findViewById(R.id.itemListView);
+        getSteamItemsFromPreference();
+        ItemsUpdatingThread itemsUpdatingThread = new ItemsUpdatingThread(mainActivity);
+        SteamItemsListViewData.setMainActivityContext(getApplicationContext());
+        sendEnteredURL("https://steamcommunity.com/market/listings/730/MAC-10%20%7C%20Whitefish%20%28Minimal%20Wear%29", "5", "5");
+        sendEnteredURL("https://steamcommunity.com/market/listings/730/MAC-10%20%7C%20Whitefish%20%28Minimal%20Wear%29", "31", "5");
         itemsUpdatingThread.start();
     }
 
@@ -64,6 +76,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         saveSteamItems();
+    }
+
+    public void soutSteamItems() {
+        for (int i = 0; i < steamItems.size(); i++) {
+            System.out.println(steamItems.toString());
+        }
+    }
+
+    public void setSteamItemsAdapter(SteamItemAdapter steamItemAdapter) {
+        this.steamItemAdapter = steamItemAdapter;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                steamItemsListView.setAdapter(steamItemAdapter);
+                soutSteamItems();
+            }
+        });
+
     }
 
     @Override
@@ -91,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.add_steamItem:
-                        EnteringURLDialog enteringURLDialog = new EnteringURLDialog();
+                        EnteringURLDialog enteringURLDialog = new EnteringURLDialog(getApplicationContext());
                         enteringURLDialog.show(getSupportFragmentManager(), null);
                 }
                 return true;
@@ -100,11 +130,12 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.show();
     }
 
-    public static void sendEnteredURL(String enteredURL) {
-        ItemAddingThread itemAddingThread = new ItemAddingThread(enteredURL);
+    public static void sendEnteredURL(String enteredURL, String enteredPrice, String enteredAmount) {
+        ItemAddingThread itemAddingThread = new ItemAddingThread(enteredURL, enteredPrice, enteredAmount);
+        itemAddingThread.start();
     }
 
-    public static void sendSteamItem(SteamItem addingSteamItem) {
+    public static void sendNewSteamItem(SteamItem addingSteamItem) {
         steamItems.add(addingSteamItem);
     }
 
@@ -123,7 +154,12 @@ public class MainActivity extends AppCompatActivity {
         if (steamItemLength != 0) {
             for (int i = 1; i <= steamItemLength; i++) {
                 String jsonSteamItem = sharedPreferences.getString(Integer.toString(i), "");
-                steamItems.add(gson.fromJson(jsonSteamItem, SteamItem.class));
+                SteamItem currentSteamItem = gson.fromJson(jsonSteamItem, SteamItem.class);
+                if (currentSteamItem != null) {
+                    if (currentSteamItem.checkForBeingFull()) {
+                        steamItems.add(currentSteamItem);
+                    }
+                }
             }
         }
     }
@@ -140,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             }
             preferenceEditor.putInt("0", steamItems.size());
         }
+        preferenceEditor.clear();
         preferenceEditor.apply();
     }
 }

@@ -14,7 +14,7 @@ public class CurrencyData {
                 return "$";
             case 5:
             default:
-                return "руб.";
+                return "pуб.";
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.steaminvestmentmanager;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -10,12 +11,18 @@ public class ItemsUpdatingThread extends Thread {
     private SteamItem[] steamItems;
     private boolean isFirstRun = true;
     private Gson gson = new Gson();
+    private MainActivity mainActivity;
+
+    public ItemsUpdatingThread(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
 
     @Override
     public void run() {
         while (!isInterrupted()) {
             SteamGetURLCreator steamGetURLCreator = new SteamGetURLCreator();
             steamItems = MainActivity.getSteamItems();
+            Context mainActivityContext = SteamItemsListViewData.getMainActivityContext();
             if (steamItems != null) {
                 for (int i = 0; i < steamItems.length; i++) {
                     if (!CurrencyData.getCurrencyChar().equals(CurrencyData.getSpecificCurrencyChar(steamItems[i].getFirstInitializationCurrency()))) {
@@ -40,13 +47,14 @@ public class ItemsUpdatingThread extends Thread {
                             steamItems[i].setFirstInitializationCurrencyLowestPrice(priceoverviewSteamItem.getLowest_price());
                         }
                     }
-                    System.out.println(steamItems[i].getFirstInitializationCurrencyLowestPrice() + " " + steamItems[i].getLowest_price());
                 }
+                SteamItemAdapter steamItemAdapter = new SteamItemAdapter(mainActivityContext, MainActivity.getSteamItems());
+                mainActivity.setSteamItemsAdapter(steamItemAdapter);
             }else {
                 System.out.println("Error");
             }
             try {
-                Thread.sleep(30000);
+                Thread.sleep(7000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

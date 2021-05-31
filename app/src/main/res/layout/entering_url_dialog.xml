@@ -7,7 +7,7 @@
         android:background="@drawable/entering_url_dialog_round_corners">
 
         <TextView
-            android:layout_marginTop="3dp"
+            android:layout_marginTop="7dp"
             android:layout_width="272dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -27,20 +27,39 @@
             android:textColor="@color/white"
             android:id="@+id/entered_url"
             android:gravity="left"
-            android:textSize="17sp"/>
-        <EditText
-            android:background="@drawable/edt_bg_selector"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_width="272dp"
+            android:textSize="17sp"
+            android:nextFocusDown="@id/entered_price"
+            android:singleLine="true"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Стоимость предмета"
-            android:textColorHint="@color/gray"
-            android:textColor="@color/white"
-            android:id="@+id/entered_price"
-            android:gravity="left"
-            android:textSize="17sp"/>
+            android:orientation="horizontal">
+            <EditText
+                android:background="@drawable/edt_bg_selector"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="6dp"
+                android:layout_width="272dp"
+                android:layout_height="wrap_content"
+                android:hint="Стоимость предмета"
+                android:textColorHint="@color/gray"
+                android:textColor="@color/white"
+                android:id="@+id/entered_price"
+                android:gravity="left"
+                android:textSize="17sp"
+                android:nextFocusDown="@id/entered_amount"
+                android:singleLine="true"/>
+
+            <TextView
+                android:layout_marginTop="12dp"
+                android:id="@+id/currencyText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:gravity="left"
+                android:textSize="17sp"
+                android:layout_marginRight="6dp"/>
+        </LinearLayout>
+
         <EditText
             android:background="@drawable/edt_bg_selector"
             android:layout_marginTop="10dp"
@@ -53,7 +72,8 @@
             android:textColor="@color/white"
             android:id="@+id/entered_amount"
             android:gravity="left"
-            android:textSize="17sp"/>
+            android:textSize="17sp"
+            android:singleLine="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"

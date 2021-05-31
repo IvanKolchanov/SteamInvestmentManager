@@ -18,6 +18,7 @@ public class ItemAddingThread extends Thread{
     private String market_hash_name;
     private String icon_url = "https://community.cloudflare.steamstatic.com/economy/image/";
     private Bitmap steamItemIcon = null;
+    private String enteredAmount, enteredPrice;
     private final int WRONG_WORD = 0, MARKET_HASH_NAME = 2, ICON_URL = 1;
 
     @Override
@@ -26,8 +27,10 @@ public class ItemAddingThread extends Thread{
         createSteamItem();
     }
 
-    public ItemAddingThread(String steamItemURL) {
+    public ItemAddingThread(String steamItemURL, String enteredPrice, String enteredAmount) {
         this.steamItemURL = steamItemURL;
+        this.enteredPrice = enteredPrice;
+        this.enteredAmount = enteredAmount;
     }
 
     private void getItemHtmlPage() {
@@ -56,52 +59,58 @@ public class ItemAddingThread extends Thread{
         cin.close();
         char[] g_rgAssetsLineArray = g_rgAssetsLine.toCharArray();
         processRgAssets(g_rgAssetsLineArray);
-        addingItem = new SteamItem(market_hash_name, appid, icon_url);
-        MainActivity.sendSteamItem(addingItem);
+        addingItem = new SteamItem(market_hash_name, appid, icon_url, enteredPrice, enteredAmount);
+        MainActivity.sendNewSteamItem(addingItem);
     }
 
     private void processRgAssets(char[] g_rgAssetsLineArray) {
         boolean isStillWord = false;
-        int presentOperation = 0;
+        int presentOperation = 0, howMuchWeFound = 0;
         String currentWord = "";
         for (int i = 0; i < g_rgAssetsLineArray.length; i++) {
-            if (presentOperation == WRONG_WORD) {
-                if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
-                    isStillWord = true;
-                }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
-                    isStillWord = false;
-                    switch (currentWord) {
-                        case "market_hash_name":
-                            presentOperation = MARKET_HASH_NAME;
-                            break;
-                        case "icon_url":
-                            presentOperation = ICON_URL;
-                            break;
-                        default:
-                            break;
+            if (howMuchWeFound != 2) {
+                if (presentOperation == WRONG_WORD) {
+                    if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
+                        isStillWord = true;
+                    }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
+                        isStillWord = false;
+                        switch (currentWord) {
+                            case "market_hash_name":
+                                presentOperation = MARKET_HASH_NAME;
+                                break;
+                            case "icon_url":
+                                presentOperation = ICON_URL;
+                                break;
+                            default:
+                                break;
+                        }
+                        currentWord = "";
+                    }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
+                        currentWord += Character.toString(g_rgAssetsLineArray[i]);
                     }
-                    currentWord = "";
-                }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
-                    currentWord += Character.toString(g_rgAssetsLineArray[i]);
+                }else {
+                    if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
+                        isStillWord = true;
+                    }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
+                        isStillWord = false;
+                        switch (presentOperation) {
+                            case MARKET_HASH_NAME:
+                                market_hash_name = currentWord;
+                                howMuchWeFound++;
+                                break;
+                            case ICON_URL:
+                                icon_url += currentWord;
+                                howMuchWeFound++;
+                                break;
+                        }
+                        presentOperation = WRONG_WORD;
+                        currentWord = "";
+                    }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
+                        currentWord += Character.toString(g_rgAssetsLineArray[i]);
+                    }
                 }
             }else {
-                if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
-                    isStillWord = true;
-                }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
-                    isStillWord = false;
-                    switch (presentOperation) {
-                        case MARKET_HASH_NAME:
-                            market_hash_name = currentWord;
-                            break;
-                        case ICON_URL:
-                            icon_url += currentWord;
-                            break;
-                    }
-                    presentOperation = WRONG_WORD;
-                    currentWord = "";
-                }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
-                    currentWord += Character.toString(g_rgAssetsLineArray[i]);
-                }
+                break;
             }
         }
     }
