@@ -4,4 +4,8 @@
         android:id="@+id/add_steamItem"
         android:title="Добавить предмет">
     </item>
+    <item
+        android:id="@+id/open_settings"
+        android:title="Настройки"
+    />
 </menu>

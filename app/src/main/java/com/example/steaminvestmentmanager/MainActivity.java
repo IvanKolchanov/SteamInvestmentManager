@@ -23,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -48,12 +49,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        steamItemsListView = (ListView) findViewById(R.id.itemListView);
         getSteamItemsFromPreference();
+        steamItemsListView = (ListView) findViewById(R.id.itemListView);
         ItemsUpdatingThread itemsUpdatingThread = new ItemsUpdatingThread(mainActivity);
         SteamItemsListViewData.setMainActivityContext(getApplicationContext());
-        sendEnteredURL("https://steamcommunity.com/market/listings/730/MAC-10%20%7C%20Whitefish%20%28Minimal%20Wear%29", "5", "5");
-        sendEnteredURL("https://steamcommunity.com/market/listings/730/MAC-10%20%7C%20Whitefish%20%28Minimal%20Wear%29", "31", "5");
         itemsUpdatingThread.start();
     }
 
@@ -74,14 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         saveSteamItems();
-    }
-
-    public void soutSteamItems() {
-        for (int i = 0; i < steamItems.size(); i++) {
-            System.out.println(steamItems.toString());
-        }
+        super.onDestroy();
     }
 
     public void setSteamItemsAdapter(SteamItemAdapter steamItemAdapter) {
@@ -90,7 +83,14 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 steamItemsListView.setAdapter(steamItemAdapter);
-                soutSteamItems();
+                steamItemsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        SteamItem steamItem = getSteamItems()[position];
+                        SteamItemInformationDialog steamItemInformationDialog = new SteamItemInformationDialog(steamItem);
+                        steamItemInformationDialog.show(getSupportFragmentManager(), null);
+                    }
+                });
             }
         });
 
@@ -121,8 +121,13 @@ public class MainActivity extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.add_steamItem:
-                        EnteringURLDialog enteringURLDialog = new EnteringURLDialog(getApplicationContext());
+                        EnteringURLDialog enteringURLDialog = new EnteringURLDialog();
                         enteringURLDialog.show(getSupportFragmentManager(), null);
+                        break;
+                    case R.id.open_settings:
+                        SettingsDialog settingsDialog = new SettingsDialog();
+                        settingsDialog.show(getSupportFragmentManager(), null);
+                        break;
                 }
                 return true;
             }
@@ -137,6 +142,26 @@ public class MainActivity extends AppCompatActivity {
 
     public static void sendNewSteamItem(SteamItem addingSteamItem) {
         steamItems.add(addingSteamItem);
+    }
+
+    public static void changeSelectedItemCurrency(SteamItem chosenSteamItem, int newCurrency) {
+        int index = steamItems.indexOf(chosenSteamItem);
+        steamItems.remove(chosenSteamItem);
+        chosenSteamItem.setFirstInitializationCurrency(newCurrency);
+        steamItems.add(index, chosenSteamItem);
+    }
+
+    public static void deleteSelectedItem(SteamItem chosenSteamItem) {
+        steamItems.remove(chosenSteamItem);
+    }
+
+    public static void sendSteamItems(SteamItem[] steamItemArray) {
+        if (steamItemArray != null) {
+            for (int i = 0; i < steamItemArray.length; i++) {
+                steamItems.get(i).setFirstInitializationCurrencyLowestPrice(steamItemArray[i].getFirstInitializationCurrencyLowestPrice());
+                steamItems.get(i).setLowest_price(steamItemArray[i].getLowest_price());
+            }
+        }
     }
 
     public static SteamItem[] getSteamItems() {
@@ -162,6 +187,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+        int userCurrency = sharedPreferences.getInt("-1", 5);
+        CurrencyData.setCurrency(userCurrency);
     }
 
     private void saveSteamItems() {
@@ -176,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
             }
             preferenceEditor.putInt("0", steamItems.size());
         }
-        preferenceEditor.clear();
+        preferenceEditor.putInt("-1", CurrencyData.getCurrency());
         preferenceEditor.apply();
     }
 }

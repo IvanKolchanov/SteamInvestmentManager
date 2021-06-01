@@ -32,11 +32,11 @@ public class ItemsUpdatingThread extends Thread {
                         if (priceoverviewSteamItem.isSuccess()) {
                             steamItems[i].setLowest_price(priceoverviewSteamItem.getLowest_price());
                         }
-                        String priceoverviewRightCurrencyURL = steamGetURLCreator.getURL(steamItems[i], true);
+                        String priceoverviewRightCurrencyURL = steamGetURLCreator.getURL(steamItems[i], false);
                         String jsonPriceoverviewSteamItemRightCurrency = new DownloadingPageHtmlCode(priceoverviewRightCurrencyURL).call();
                         PriceoverviewSteamItem priceoverviewRightCurrencySteamItem = gson.fromJson(jsonPriceoverviewSteamItemRightCurrency, PriceoverviewSteamItem.class);
                         if (priceoverviewRightCurrencySteamItem.isSuccess()) {
-                            steamItems[i].setFirstInitializationCurrencyLowestPrice(priceoverviewSteamItem.getLowest_price());
+                            steamItems[i].setFirstInitializationCurrencyLowestPrice(priceoverviewRightCurrencySteamItem.getLowest_price());
                         }
                     }else {
                         String priceoverviewURL = steamGetURLCreator.getURL(steamItems[i], true);
@@ -50,15 +50,15 @@ public class ItemsUpdatingThread extends Thread {
                 }
                 SteamItemAdapter steamItemAdapter = new SteamItemAdapter(mainActivityContext, MainActivity.getSteamItems());
                 mainActivity.setSteamItemsAdapter(steamItemAdapter);
+                MainActivity.sendSteamItems(steamItems);
             }else {
                 System.out.println("Error");
             }
             try {
-                Thread.sleep(7000);
+                Thread.sleep(5500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
     }
 }

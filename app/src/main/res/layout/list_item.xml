@@ -4,7 +4,6 @@
     android:layout_height="160px"
     android:gravity="center_vertical"
     android:textSize="30sp">
-
     <ImageView
         android:id="@+id/itemIcon"
         android:layout_width="wrap_content"
@@ -16,12 +15,12 @@
         android:layout_weight="1"
         android:textColor="@color/black"
         android:layout_height="wrap_content"
-        android:textSize="18sp"/>
+        android:textSize="19sp"/>
     <TextView
         android:id="@+id/itemPercent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="22sp"
+        android:textSize="23sp"
         android:textColor="@android:color/black"
         android:layout_marginRight="10dp"/>
 </LinearLayout>

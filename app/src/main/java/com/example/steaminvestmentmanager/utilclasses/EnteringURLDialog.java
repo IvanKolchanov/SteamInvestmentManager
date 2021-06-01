@@ -24,10 +24,7 @@ import org.w3c.dom.EntityReference;
 import org.w3c.dom.ls.LSOutput;
 
 public class EnteringURLDialog extends DialogFragment {
-    private Context mainActivityContext;
-    public EnteringURLDialog(Context mainActivityContext) {
-        this.mainActivityContext = mainActivityContext;
-    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

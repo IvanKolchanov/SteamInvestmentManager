@@ -16,11 +16,16 @@ import androidx.core.content.ContextCompat;
 import com.example.steaminvestmentmanager.R;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
 
     public SteamItemAdapter(Context context, SteamItem[] steamItems) {
         super(context, R.layout.list_item, steamItems);
+    }
+
+    private void deleteCurrencySimbols(String lowestPrice) {
+
     }
 
     @NonNull
@@ -35,11 +40,10 @@ public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
         TextView itemName = (TextView) convertView.findViewById(R.id.itemName);
         itemName.setText(steamItem.getMarket_hash_name());
         TextView itemPercent = (TextView) convertView.findViewById(R.id.itemPercent);
-        float starterPrice = Integer.parseInt(steamItem.getStarterPrice());
-        String lowest_price = steamItem.getLowest_price();
-        lowest_price = lowest_price.replace(CurrencyData.getCurrencyChar(), "");
-        lowest_price = lowest_price.replace(",", ".");
-        lowest_price = lowest_price.replace(" ", "");
+        float starterPrice = Float.parseFloat(steamItem.getStarterPrice().replace(",", "."));
+        String lowest_price = steamItem.getFirstInitializationCurrencyLowestPrice().replace(",", ".");
+        String a = "\\$";
+        lowest_price = lowest_price.replaceAll("pуб.", "").replaceAll(a, "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
         float currentPrice = Float.parseFloat(lowest_price);
         float percentage = currentPrice/starterPrice;
         char[] percentageString = Float.toString(percentage).toCharArray();

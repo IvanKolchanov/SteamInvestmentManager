@@ -17,7 +17,7 @@ public class SteamItem {
         this.market_hash_name = market_hash_name;
         this.appid = appid;
         this.itemIconURL = itemIconURL;
-        this.itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/160fx160").call();
+        this.itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/215fx215").call();
         this.starterPrice = enteredPrice;
         this.amount = Integer.parseInt(enteredAmount);
         firstInitializationCurrency = CurrencyData.getCurrency();
@@ -39,12 +39,24 @@ public class SteamItem {
         this.itemIcon = itemIcon;
     }
 
+    public void setAmount(int amount) {
+        this.amount = amount;
+    }
+
     public String getItemIconURL() {
         return itemIconURL;
     }
 
     public String getAppid() {
         return appid;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setFirstInitializationCurrency(int firstInitializationCurrency) {
+        this.firstInitializationCurrency = firstInitializationCurrency;
     }
 
     public void setLowest_price(String lowest_price) {
