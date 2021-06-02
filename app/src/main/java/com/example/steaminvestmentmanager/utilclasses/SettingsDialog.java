@@ -25,7 +25,6 @@ public class SettingsDialog extends DialogFragment {
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Spinner currencySpinner = (Spinner) rootView.findViewById(R.id.currencySpinner);
         ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_spinner_item, CurrencyData.getCurrencyArray());
-        System.out.println(CurrencyData.getCurrencyArray());
         currencyAdapter.setDropDownViewResource(R.layout.my_simple_drop_down_item);
         currencySpinner.setAdapter(currencyAdapter);
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

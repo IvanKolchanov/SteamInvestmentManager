@@ -25,6 +25,9 @@ public class ItemsUpdatingThread extends Thread {
             Context mainActivityContext = SteamItemsListViewData.getMainActivityContext();
             if (steamItems != null) {
                 for (int i = 0; i < steamItems.length; i++) {
+                    if (steamItems[i].getItemIcon() == null) {
+                        steamItems[i].downloadItemIconAgain();
+                    }
                     if (!CurrencyData.getCurrencyChar().equals(CurrencyData.getSpecificCurrencyChar(steamItems[i].getFirstInitializationCurrency()))) {
                         String priceoverviewURL = steamGetURLCreator.getURL(steamItems[i], true);
                         String jsonPriceoverviewSteamItem = new DownloadingPageHtmlCode(priceoverviewURL).call();
@@ -47,17 +50,17 @@ public class ItemsUpdatingThread extends Thread {
                             steamItems[i].setFirstInitializationCurrencyLowestPrice(priceoverviewSteamItem.getLowest_price());
                         }
                     }
+                    MainActivity.sendSteamItems(steamItems);
+                    try {
+                        Thread.sleep(3500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
+
                 SteamItemAdapter steamItemAdapter = new SteamItemAdapter(mainActivityContext, MainActivity.getSteamItems());
                 mainActivity.setSteamItemsAdapter(steamItemAdapter);
-                MainActivity.sendSteamItems(steamItems);
-            }else {
-                System.out.println("Error");
-            }
-            try {
-                Thread.sleep(5500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+
             }
         }
     }

@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView steamItemsListView;
     private MainActivity mainActivity = this;
     private SteamItemAdapter steamItemAdapter;
+    private final String preferenceName = "savedData";
 
 
     @Override
@@ -69,11 +70,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
+        saveSteamItems();
     }
 
     @Override
     protected void onDestroy() {
-        saveSteamItems();
         super.onDestroy();
     }
 
@@ -144,13 +145,6 @@ public class MainActivity extends AppCompatActivity {
         steamItems.add(addingSteamItem);
     }
 
-    public static void changeSelectedItemCurrency(SteamItem chosenSteamItem, int newCurrency) {
-        int index = steamItems.indexOf(chosenSteamItem);
-        steamItems.remove(chosenSteamItem);
-        chosenSteamItem.setFirstInitializationCurrency(newCurrency);
-        steamItems.add(index, chosenSteamItem);
-    }
-
     public static void deleteSelectedItem(SteamItem chosenSteamItem) {
         steamItems.remove(chosenSteamItem);
     }
@@ -173,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getSteamItemsFromPreference() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(preferenceName, MODE_PRIVATE);
         Gson gson = new Gson();
         int steamItemLength = sharedPreferences.getInt("0", 0);
         if (steamItemLength != 0) {
@@ -187,12 +181,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        int userCurrency = sharedPreferences.getInt("-1", 5);
+        int userCurrency = sharedPreferences.getInt("currency", 5);
         CurrencyData.setCurrency(userCurrency);
     }
 
     private void saveSteamItems() {
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(preferenceName, MODE_PRIVATE);
         SharedPreferences.Editor preferenceEditor = sharedPreferences.edit();
         Gson gson = new Gson();
         if (steamItems != null) {
@@ -203,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
             }
             preferenceEditor.putInt("0", steamItems.size());
         }
-        preferenceEditor.putInt("-1", CurrencyData.getCurrency());
+        preferenceEditor.putInt("currency", CurrencyData.getCurrency());
         preferenceEditor.apply();
     }
 }

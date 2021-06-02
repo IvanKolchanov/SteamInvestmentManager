@@ -23,6 +23,14 @@ public class SteamItem {
         firstInitializationCurrency = CurrencyData.getCurrency();
     }
 
+    public void downloadItemIconAgain() {
+        this.itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/215fx215").call();
+    }
+
+    public void setStarterPrice(String starterPrice) {
+        this.starterPrice = starterPrice;
+    }
+
     public String getMarket_hash_name() {
         return market_hash_name;
     }
@@ -98,6 +106,7 @@ public class SteamItem {
                 appid + "\n" +
                 starterPrice + "\n" +
                 amount + "\n" +
-                firstInitializationCurrency;
+                firstInitializationCurrency + "\n" +
+                firstInitializationCurrencyMedianPrice;
     }
 }

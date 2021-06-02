@@ -40,8 +40,14 @@ public class EnteringURLDialog extends DialogFragment {
                 String enteredURLText = enteredURL.getText().toString();
                 String enteredPriceText = enteredPrice.getText().toString();
                 String enteredAmountText = enteredAmount.getText().toString();
-                MainActivity.sendEnteredURL(enteredURLText, enteredPriceText, enteredAmountText);
-                dismiss();
+                try {
+                    Float.parseFloat(enteredPriceText);
+                    Integer.parseInt(enteredAmountText);
+                    MainActivity.sendEnteredURL(enteredURLText, enteredPriceText, enteredAmountText);
+                    dismiss();
+                }catch (Exception e) {
+                    Toast.makeText(getContext(), "Неправильно введены данные", Toast.LENGTH_LONG).show();
+                }
             }
         });
         rootView.findViewById(R.id.cancel_dialog_button).setOnClickListener(new View.OnClickListener() {
