@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">Steam Investment Manager</string>
+    <string name="title">SIM</string>
+    <string name="addingItem">Добавление предмета</string>
+    <string name="itemLink">Cсылка на лот</string>
+    <string name="inventoryWorth">Стоимость предмета</string>
+    <string name="numberOfItems">Количество</string>
+    <string name="cancel">Отменить</string>
+    <string name="accept">Принять</string>
+    <string name="choseCurrency">Выберите валюту:</string>
+    <string name="priceOfBuying">Цена покупки:</string>
+    <string name="numberOfItemsColon">Количество:</string>
+    <string name="delete">Удалить</string>
 </resources>

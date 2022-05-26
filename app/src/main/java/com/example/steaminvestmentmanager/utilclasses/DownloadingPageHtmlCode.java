@@ -1,7 +1,5 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
-import com.example.steaminvestmentmanager.MainActivity;
-
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.Scanner;
@@ -18,7 +16,7 @@ public class DownloadingPageHtmlCode implements Callable<String> {
     @Override
     public String call(){
         content = null;
-        URLConnection connection = null;
+        URLConnection connection;
         try {
             connection =  new URL(htmlPageUrl).openConnection();
             Scanner scanner = new Scanner(connection.getInputStream());

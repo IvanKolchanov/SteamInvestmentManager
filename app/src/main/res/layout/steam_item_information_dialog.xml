@@ -19,14 +19,14 @@
                 android:id="@+id/item_icon"
                 android:layout_width="350px"
                 android:layout_height="350px"
-                android:layout_marginLeft="10dp" />
+                android:layout_marginStart="10dp" />
             <TextView
-                android:layout_marginRight="6dp"
+                android:layout_marginEnd="6dp"
                 android:id="@+id/item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:gravity="left"
+                android:layout_marginStart="10dp"
+                android:gravity="start"
                 android:textSize="19sp"
                 android:textColor="@color/white"/>
         </LinearLayout>
@@ -34,26 +34,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
                 android:id="@+id/starter_price_text"
                 android:textColor="@color/white"
-                android:layout_alignParentLeft="true"
-                android:text="Цена покупки:"/>
+                android:layout_alignParentStart="true"
+                android:text="@string/priceOfBuying"/>
             <ViewSwitcher
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/starter_price"
                 android:layout_toEndOf="@id/starter_price_text">
                 <EditText
+                    android:inputType="number"
                     android:focusable="true"
                     android:textColor="@color/white"
                     android:textSize="19sp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="10dp"
                     android:singleLine="true"
                     android:id="@+id/item_starter_priceEdit"
                     android:layout_width="match_parent"
@@ -67,7 +68,7 @@
                     android:id="@+id/item_buy_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
                     android:textColor="@color/white" />
             </ViewSwitcher>
             <TextView
@@ -76,17 +77,17 @@
                 android:textSize="16sp"
                 android:layout_marginTop="7dp"
                 android:id="@+id/currency"
-                android:layout_marginLeft="14dp"
+                android:layout_marginStart="14dp"
                 android:textColor="@color/white"
                 android:layout_toEndOf="@id/starter_price"/>
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/change_view_pencil_price"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:layout_marginTop="7dp"
-                android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"/>
+                android:layout_marginEnd="10dp"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
         <TextView
             android:textSize="19sp"
@@ -94,7 +95,7 @@
             android:id="@+id/item_current_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:textColor="@color/white" />
 
         <RelativeLayout
@@ -104,14 +105,14 @@
             android:orientation="horizontal">
             <TextView
                 android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="19sp"
-                android:text="Количество:"
+                android:text="@string/numberOfItemsColon"
                 android:id="@+id/number_text"
                 android:textColor="@color/white"
-                android:layout_alignParentLeft="true"/>
+                android:layout_alignParentStart="true"/>
 
             <ViewSwitcher
                 android:layout_width="167dp"
@@ -119,11 +120,12 @@
                 android:id="@+id/amount"
                 android:layout_toEndOf="@id/number_text">
                 <EditText
+                    android:inputType="number"
                     android:focusable="true"
                     android:textColor="@color/white"
                     android:textSize="19sp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="10dp"
                     android:singleLine="true"
                     android:id="@+id/item_amountEdit"
                     android:layout_width="match_parent"
@@ -133,25 +135,25 @@
                     android:layout_marginTop="5dp"
                     android:textColor="@color/white"
                     android:textSize="19sp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="10dp"
                     android:id="@+id/item_amount"
                     android:layout_height="match_parent"
                     android:layout_width="match_parent"/>
             </ViewSwitcher>
             <ImageView
                 android:layout_marginTop="7dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:id="@+id/change_view_pencil"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:layout_marginRight="10dp" />
+                android:layout_gravity="end"
+                android:layout_marginEnd="10dp" />
         </RelativeLayout>
         <TextView
             android:textSize="19sp"
             android:layout_marginTop="6dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:id="@+id/item_profit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -163,7 +165,7 @@
             style="@style/WhiteBorderlessButton"
             android:layout_width="wrap_content"
             android:layout_height="47dp"
-            android:text="Удалить"
-            android:layout_gravity="right"/>
+            android:text="@string/delete"
+            android:layout_gravity="end"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -41,21 +41,17 @@ public class CurrencyData {
 
     public static String[] getCurrencyArray() {
         ArrayList<String> currencyArrayList = new ArrayList<>();
-        Boolean check = false;
         currencyArrayList.add(getCurrencyChar());
         for (int i = 0; i < 6; i++) {
             if (!currencyArrayList.contains(getSpecificCurrencyChar(i))) {
                 currencyArrayList.add(getSpecificCurrencyChar(i));
             }
         }
-        String[] currencyArray = currencyArrayList.toArray(new String[0]);
-        return currencyArray;
+        return currencyArrayList.toArray(new String[0]);
     }
 
     public static int getCurrencyFromChar(String currencyChar) {
         switch (currencyChar) {
-            case ".руб":
-                return 5;
             case "$":
                 return 1;
             case "£":

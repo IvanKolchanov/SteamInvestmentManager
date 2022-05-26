@@ -17,14 +17,16 @@ import androidx.fragment.app.DialogFragment;
 import com.example.steaminvestmentmanager.MainActivity;
 import com.example.steaminvestmentmanager.R;
 
+import java.util.Objects;
+
 public class SettingsDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.settings_dialog, null);
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Spinner currencySpinner = (Spinner) rootView.findViewById(R.id.currencySpinner);
-        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<String>(getContext(), R.layout.my_simple_spinner_item, CurrencyData.getCurrencyArray());
+        Objects.requireNonNull(getDialog()).getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Spinner currencySpinner = rootView.findViewById(R.id.currencySpinner);
+        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(getContext(), R.layout.my_simple_spinner_item, CurrencyData.getCurrencyArray());
         currencyAdapter.setDropDownViewResource(R.layout.my_simple_drop_down_item);
         currencySpinner.setAdapter(currencyAdapter);
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

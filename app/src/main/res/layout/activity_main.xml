@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:id="@+id/toolbar"
-        android:title="SIM"
+        android:title="@string/title"
         android:theme="@style/Toolbar" />
     <ListView
         android:layout_width="match_parent"

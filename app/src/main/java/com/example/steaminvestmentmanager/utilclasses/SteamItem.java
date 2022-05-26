@@ -2,6 +2,7 @@ package com.example.steaminvestmentmanager.utilclasses;
 
 import android.graphics.Bitmap;
 
+
 public class SteamItem {
     private String market_hash_name;
     private String lowest_price;
@@ -28,7 +29,9 @@ public class SteamItem {
     }
 
     public void setStarterPrice(String starterPrice) {
-        this.starterPrice = starterPrice;
+        this.starterPrice = "";
+        this.starterPrice += starterPrice;
+        System.out.println(this.starterPrice);
     }
 
     public String getMarket_hash_name() {
@@ -76,7 +79,8 @@ public class SteamItem {
     }
 
     public void setFirstInitializationCurrencyLowestPrice(String firstInitializationCurrencyMedianPrice) {
-        this.firstInitializationCurrencyMedianPrice = firstInitializationCurrencyMedianPrice;
+        this.firstInitializationCurrencyMedianPrice = "";
+        this.firstInitializationCurrencyMedianPrice += firstInitializationCurrencyMedianPrice;
     }
 
     public String getFirstInitializationCurrencyLowestPrice() {
@@ -89,14 +93,9 @@ public class SteamItem {
 
     public boolean checkForBeingFull() {
         if ((market_hash_name != null) && (itemIconURL != null) && (appid != null) && (starterPrice != null)) {
-            if ((!market_hash_name.equals("") && (!itemIconURL.equals("")) && (!appid.equals("")) && (!starterPrice.equals("")) && (amount >= 0) && (firstInitializationCurrency >= 0))) {
-                return true;
-            }else {
-                return false;
-            }
-        }else {
-            return false;
+            return !market_hash_name.equals("") && (!itemIconURL.equals("")) && (!appid.equals("")) && (!starterPrice.equals("")) && (amount >= 0) && (firstInitializationCurrency >= 0);
         }
+        return false;
     }
 
     @Override

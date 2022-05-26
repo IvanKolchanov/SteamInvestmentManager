@@ -42,7 +42,6 @@ public class ItemAddingThread extends Thread{
         String[] urlArray = steamItemURL.split("/");
         appid = urlArray[5];
         Scanner cin = new Scanner(content);
-        int counter = 1;
         boolean isFound = false;
         String g_rgAssetsLine = "";
         while (!isFound && cin.hasNext()) {
@@ -54,7 +53,6 @@ public class ItemAddingThread extends Thread{
                     isFound = true;
                 }
             }
-            counter++;
         }
         cin.close();
         char[] g_rgAssetsLineArray = g_rgAssetsLine.toCharArray();
@@ -67,12 +65,12 @@ public class ItemAddingThread extends Thread{
         boolean isStillWord = false;
         int presentOperation = 0, howMuchWeFound = 0;
         String currentWord = "";
-        for (int i = 0; i < g_rgAssetsLineArray.length; i++) {
+        for (char c : g_rgAssetsLineArray) {
             if (howMuchWeFound != 2) {
                 if (presentOperation == WRONG_WORD) {
-                    if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
+                    if (!isStillWord && c == '"') {
                         isStillWord = true;
-                    }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
+                    } else if (isStillWord && c == '"') {
                         isStillWord = false;
                         switch (currentWord) {
                             case "market_hash_name":
@@ -85,13 +83,13 @@ public class ItemAddingThread extends Thread{
                                 break;
                         }
                         currentWord = "";
-                    }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
-                        currentWord += Character.toString(g_rgAssetsLineArray[i]);
+                    } else if (isStillWord && c != '"') {
+                        currentWord += Character.toString(c);
                     }
-                }else {
-                    if (!isStillWord && g_rgAssetsLineArray[i] == '"') {
+                } else {
+                    if (!isStillWord && c == '"') {
                         isStillWord = true;
-                    }else if (isStillWord && g_rgAssetsLineArray[i] == '"') {
+                    } else if (isStillWord && c == '"') {
                         isStillWord = false;
                         switch (presentOperation) {
                             case MARKET_HASH_NAME:
@@ -105,11 +103,11 @@ public class ItemAddingThread extends Thread{
                         }
                         presentOperation = WRONG_WORD;
                         currentWord = "";
-                    }else if (isStillWord && g_rgAssetsLineArray[i] != '"') {
-                        currentWord += Character.toString(g_rgAssetsLineArray[i]);
+                    } else if (isStillWord && c != '"') {
+                        currentWord += Character.toString(c);
                     }
                 }
-            }else {
+            } else {
                 break;
             }
         }

@@ -30,6 +30,8 @@ import com.example.steaminvestmentmanager.R;
 
 import org.w3c.dom.Text;
 
+import java.util.Objects;
+
 public class SteamItemInformationDialog extends DialogFragment {
     private SteamItem chosenSteamItem;
     private String text;
@@ -44,14 +46,14 @@ public class SteamItemInformationDialog extends DialogFragment {
         View rootView = inflater.inflate(R.layout.steam_item_information_dialog, null);
 
         //настраиваю окно диалога
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(getDialog()).getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //устанавливаю окно предмета
-        ImageView itemIcon = (ImageView) rootView.findViewById(R.id.item_icon);
+        ImageView itemIcon = rootView.findViewById(R.id.item_icon);
         itemIcon.setImageBitmap(chosenSteamItem.getItemIcon());
 
         //устанавливаю имя предмета
-        TextView itemName = (TextView) rootView.findViewById(R.id.item_name);
+        TextView itemName = rootView.findViewById(R.id.item_name);
         itemName.setText(chosenSteamItem.getMarket_hash_name());
 
         //делаю всё для редактирования начальной цены
@@ -59,78 +61,72 @@ public class SteamItemInformationDialog extends DialogFragment {
         starterPriceViewSwitcher.showNext();
         ImageView pencilStarterPrice = rootView.findViewById(R.id.change_view_pencil_price);
         pencilStarterPrice.setImageDrawable(getResources().getDrawable(R.drawable.outline_create_24, null));
-        TextView currencyText = (TextView) rootView.findViewById(R.id.currency);
+        TextView currencyText = rootView.findViewById(R.id.currency);
         currencyText.setText(CurrencyData.getCurrencyChar());
-        pencilStarterPrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                text = "";
-                View currentSwitcherView = starterPriceViewSwitcher.getCurrentView();
-                if (currentSwitcherView instanceof TextView) {
-                    text = "" + ((TextView) starterPriceViewSwitcher.getCurrentView()).getText();
-                    EditText amountEditText = (EditText) starterPriceViewSwitcher.findViewById(R.id.item_starter_priceEdit);
-                    amountEditText.setText(text);
-                    amountEditText.setOnKeyListener(new View.OnKeyListener() {
-                        @Override
-                        public boolean onKey(View v, int keyCode, KeyEvent event) {
-                            if (keyCode == event.KEYCODE_ENTER) {
-                                starterPriceViewSwitcher.showNext();
-                                TextView itemAmountCurrentTextView = (TextView) starterPriceViewSwitcher.getCurrentView();
-                                try {
-                                    float starterPriceE = Float.parseFloat((amountEditText.getText() + "").replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
-                                    chosenSteamItem.setStarterPrice(Float.toString(starterPriceE));
-                                    itemAmountCurrentTextView.setText(amountEditText.getText());
-                                    TextView profitView = rootView.findViewById(R.id.item_profit);
-                                    float starterPrice = Float.parseFloat((itemAmountCurrentTextView.getText() + "").replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
-                                    String currentPriceString = chosenSteamItem.getLowest_price().replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
-                                    float curentPrice = Float.parseFloat(currentPriceString);
-                                    float profit = (curentPrice - starterPrice) * chosenSteamItem.getAmount();
-                                    String profitString = Float.toString(profit);
-                                    if (profit == (long) profit) {
-                                        profitString = String.format("%s", (long) profit);
-                                    }else {
-                                        profitString = String.format("%.2f", profit);
-                                    }
-                                    profitView.setText("Прибыль:  " + profitString);
-                                    return true;
-                                }catch (Exception e) {
-                                    Toast.makeText(getContext(), "Неправельно введена цена", Toast.LENGTH_LONG).show();
-                                    System.out.println(e.getMessage());
-                                    return false;
-                                }
+        pencilStarterPrice.setOnClickListener(v -> {
+            text = "";
+            View currentSwitcherView = starterPriceViewSwitcher.getCurrentView();
+            if (currentSwitcherView instanceof TextView) {
+                text = "" + ((TextView) starterPriceViewSwitcher.getCurrentView()).getText();
+                EditText amountEditText = starterPriceViewSwitcher.findViewById(R.id.item_starter_priceEdit);
+                amountEditText.setText(text);
+                amountEditText.setOnKeyListener((v1, keyCode, event) -> {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        starterPriceViewSwitcher.showNext();
+                        TextView itemAmountCurrentTextView = (TextView) starterPriceViewSwitcher.getCurrentView();
+                        try {
+                            float starterPriceE = Float.parseFloat((amountEditText.getText() + "").replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
+                            chosenSteamItem.setStarterPrice(Float.toString(starterPriceE));
+                            chosenSteamItem.setFirstInitializationCurrency(CurrencyData.getCurrency());
+                            itemAmountCurrentTextView.setText(amountEditText.getText());
+                            TextView profitView = rootView.findViewById(R.id.item_profit);
+                            String currentPriceString = chosenSteamItem.getLowest_price().replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
+                            float currentPrice = Float.parseFloat(currentPriceString);
+                            float profit = (currentPrice - starterPriceE) * chosenSteamItem.getAmount();
+                            String profitString;
+                            if (profit == (long) profit) {
+                                profitString = String.format("%s", (long) profit);
                             }else {
-                                return false;
+                                profitString = String.format("%.2f", profit);
                             }
+                            profitView.setText("Прибыль:  " + profitString);
+                            return true;
+                        }catch (Exception e) {
+                            Toast.makeText(getContext(), "Неправельно введена цена", Toast.LENGTH_LONG).show();
+                            System.out.println(e.getMessage());
+                            return false;
                         }
-                    });
-                }else {
-                    EditText editText = (EditText) starterPriceViewSwitcher.getCurrentView();
-                    try {
-                        if (editText.getText().toString() != "") {
-                            float i = Float.parseFloat(editText.getText().toString().replace(",", "."));
-                            ((TextView) starterPriceViewSwitcher.findViewById(R.id.item_buy_price)).setText(Float.toString(i));
-                        }
-                    }catch (Exception e) {
-                        text = (String) ((TextView) starterPriceViewSwitcher.findViewById(R.id.item_amount)).getText();
+                    }else {
+                        return false;
                     }
+                });
+            }else {
+                EditText editText = (EditText) starterPriceViewSwitcher.getCurrentView();
+                try {
+                    if (!editText.getText().toString().equals("")) {
+                        float i = Float.parseFloat(editText.getText().toString().replace(",", "."));
+                        ((TextView) starterPriceViewSwitcher.findViewById(R.id.item_buy_price)).setText(Float.toString(i));
+                    }
+                }catch (Exception e) {
+                    text = (String) ((TextView) starterPriceViewSwitcher.findViewById(R.id.item_amount)).getText();
                 }
-                starterPriceViewSwitcher.showNext();
-                if (starterPriceViewSwitcher.getCurrentView() instanceof EditText) {
-                    EditText ed = ((EditText) starterPriceViewSwitcher.getCurrentView());
-                    ed.requestFocus();
-                    ed.setSelection(ed.getText().length());
-                }
+            }
+            starterPriceViewSwitcher.showNext();
+            if (starterPriceViewSwitcher.getCurrentView() instanceof EditText) {
+                EditText ed = ((EditText) starterPriceViewSwitcher.getCurrentView());
+                ed.requestFocus();
+                ed.setSelection(ed.getText().length());
             }
         });
 
         //вывожу нацальную цену, профит, нынешнюю цену
-        TextView starterPriceText = (TextView) starterPriceViewSwitcher.findViewById(R.id.item_buy_price);
+        TextView starterPriceText = starterPriceViewSwitcher.findViewById(R.id.item_buy_price);
         if (chosenSteamItem.getFirstInitializationCurrency() == CurrencyData.getCurrency()) {
             //устанавливаю цену покупки
             String itemText = chosenSteamItem.getStarterPrice();
             starterPriceText.setText(itemText);
             //устанавливаю прибыль
-            TextView itemProfit = (TextView) rootView.findViewById(R.id.item_profit);
+            TextView itemProfit = rootView.findViewById(R.id.item_profit);
             float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", ".")); //получение начальной цены
             String lowestRightCurrencyPrice = chosenSteamItem.getFirstInitializationCurrencyLowestPrice(); //получение начальной цены в правильных единицах
             lowestRightCurrencyPrice = lowestRightCurrencyPrice.replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
@@ -149,7 +145,7 @@ public class SteamItemInformationDialog extends DialogFragment {
             float divided = rightCurrencyPrice/userCurrencyPrice;
             float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", "."));
             starterPrice = starterPrice / divided;
-            String starterPriceTextItem = "";
+            String starterPriceTextItem;
             if (starterPrice == (long) starterPrice) {
                  starterPriceTextItem = String.format("%s", (long) starterPrice);
             }else {
@@ -157,18 +153,17 @@ public class SteamItemInformationDialog extends DialogFragment {
             }
             starterPriceText.setText(starterPriceTextItem);
             float profit = (userCurrencyPrice - starterPrice) * chosenSteamItem.getAmount();
-            String profitString = Float.toString(profit);
+            String profitString;
             if (profit == (long) profit) {
                 profitString = String.format("%s", (long) profit);
             }else {
                 profitString = String.format("%.2f", profit);
             }
-            TextView itemProfit = (TextView) rootView.findViewById(R.id.item_profit);
+            TextView itemProfit = rootView.findViewById(R.id.item_profit);
             itemProfit.setText("Прибыль:  " + profitString + " " + CurrencyData.getCurrencyChar());
         }
-
         //установка нынешней цены
-        TextView itemCurrentPrice = (TextView) rootView.findViewById(R.id.item_current_price);
+        TextView itemCurrentPrice = rootView.findViewById(R.id.item_current_price);
         itemCurrentPrice.setText("Нынешняя цена:  " + chosenSteamItem.getLowest_price());
 
         //установка и настройка редактирования amount
@@ -178,90 +173,81 @@ public class SteamItemInformationDialog extends DialogFragment {
         itemAmount.setText(Integer.toString(chosenSteamItem.getAmount()));
         ImageView pencilIcon = rootView.findViewById(R.id.change_view_pencil);
         pencilIcon.setImageDrawable(getResources().getDrawable(R.drawable.outline_create_24, null));
-        pencilIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                text = "";
-                View currentSwitcherView = viewSwitcher.getCurrentView();
-                if (currentSwitcherView instanceof TextView) {
-                    text = "" + ((TextView) viewSwitcher.getCurrentView()).getText();
-                    EditText amountEditText = (EditText) viewSwitcher.findViewById(R.id.item_amountEdit);
-                    amountEditText.setText(text);
-                    amountEditText.setOnKeyListener(new View.OnKeyListener() {
-                        @Override
-                        public boolean onKey(View v, int keyCode, KeyEvent event) {
-                            if (keyCode == event.KEYCODE_ENTER) {
-                                viewSwitcher.showNext();
-                                TextView itemAmountCurrentTextView = (TextView) viewSwitcher.getCurrentView();
-                                try {
-                                    chosenSteamItem.setAmount(Integer.parseInt("" + amountEditText.getText()));
-                                    itemAmountCurrentTextView.setText(amountEditText.getText());
-                                    if (chosenSteamItem.getFirstInitializationCurrency() == CurrencyData.getCurrency()) {
-                                        //устанавливаю прибыль
-                                        TextView itemProfit = (TextView) rootView.findViewById(R.id.item_profit);
-                                        float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", ".")); //получение начальной цены
-                                        String lowestRightCurrencyPrice = chosenSteamItem.getFirstInitializationCurrencyLowestPrice(); //получение начальной цены в правильных единицах
-                                        lowestRightCurrencyPrice = lowestRightCurrencyPrice.replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
-                                        float rightCurrencyPrice = Float.parseFloat(lowestRightCurrencyPrice);
-                                        String profit = Float.toString((rightCurrencyPrice - starterPrice) * chosenSteamItem.getAmount());
-                                        if (Float.parseFloat(profit) == (long) Float.parseFloat(profit)) {
-                                            profit = String.format("%s", (long) Float.parseFloat(profit));
-                                        }else {
-                                            profit = String.format("%.2f", Float.parseFloat(profit));
-                                        }
-                                        itemProfit.setText("Прибыль:  " + profit + " " + CurrencyData.getCurrencyChar());
-                                    }else {
-                                        String a = "\\$";
-                                        float rightCurrencyPrice = Float.parseFloat(chosenSteamItem.getFirstInitializationCurrencyLowestPrice().replaceAll("pуб.", "").replaceAll(a, "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
-                                        float userCurrencyPrice = Float.parseFloat(chosenSteamItem.getLowest_price().replaceAll("pуб.", "").replaceAll(a, "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
-                                        float divided = rightCurrencyPrice/userCurrencyPrice;
-                                        float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", "."));
-                                        starterPrice = starterPrice / divided;
-                                        float profit = (userCurrencyPrice - starterPrice) * chosenSteamItem.getAmount();
-                                        String profitString = Float.toString(profit);
-                                        if (profit == (long) profit) {
-                                            profitString = String.format("%s", (long) profit);
-                                        }else {
-                                            profitString = String.format("%.2f", profit);
-                                        }
-                                        TextView itemProfit = (TextView) rootView.findViewById(R.id.item_profit);
-                                        itemProfit.setText("Прибыль:  " + profitString + " " + CurrencyData.getCurrencyChar());
-                                    }
-                                }catch (NumberFormatException e) {
-
+        pencilIcon.setOnClickListener(v -> {
+            text = "";
+            View currentSwitcherView = viewSwitcher.getCurrentView();
+            if (currentSwitcherView instanceof TextView) {
+                text = "" + ((TextView) viewSwitcher.getCurrentView()).getText();
+                EditText amountEditText = viewSwitcher.findViewById(R.id.item_amountEdit);
+                amountEditText.setText(text);
+                amountEditText.setOnKeyListener((v12, keyCode, event) -> {
+                    if (keyCode == KeyEvent.KEYCODE_ENTER) {
+                        viewSwitcher.showNext();
+                        TextView itemAmountCurrentTextView = (TextView) viewSwitcher.getCurrentView();
+                        try {
+                            chosenSteamItem.setAmount(Integer.parseInt("" + amountEditText.getText()));
+                            itemAmountCurrentTextView.setText(amountEditText.getText());
+                            if (chosenSteamItem.getFirstInitializationCurrency() == CurrencyData.getCurrency()) {
+                                //устанавливаю прибыль
+                                TextView itemProfit = rootView.findViewById(R.id.item_profit);
+                                float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", ".")); //получение начальной цены
+                                String lowestRightCurrencyPrice = chosenSteamItem.getFirstInitializationCurrencyLowestPrice(); //получение начальной цены в правильных единицах
+                                lowestRightCurrencyPrice = lowestRightCurrencyPrice.replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
+                                float rightCurrencyPrice = Float.parseFloat(lowestRightCurrencyPrice);
+                                String profit = Float.toString((rightCurrencyPrice - starterPrice) * chosenSteamItem.getAmount());
+                                if (Float.parseFloat(profit) == (long) Float.parseFloat(profit)) {
+                                    profit = String.format("%s", (long) Float.parseFloat(profit));
+                                }else {
+                                    profit = String.format("%.2f", Float.parseFloat(profit));
                                 }
-                                return true;
+                                itemProfit.setText("Прибыль:  " + profit + " " + CurrencyData.getCurrencyChar());
                             }else {
-                                return false;
+                                String a = "\\$";
+                                float rightCurrencyPrice = Float.parseFloat(chosenSteamItem.getFirstInitializationCurrencyLowestPrice().replaceAll("pуб.", "").replaceAll(a, "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
+                                float userCurrencyPrice = Float.parseFloat(chosenSteamItem.getLowest_price().replaceAll("pуб.", "").replaceAll(a, "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", ""));
+                                float divided = rightCurrencyPrice/userCurrencyPrice;
+                                float starterPrice = Float.parseFloat(chosenSteamItem.getStarterPrice().replace(",", "."));
+                                starterPrice = starterPrice / divided;
+                                float profit = (userCurrencyPrice - starterPrice) * chosenSteamItem.getAmount();
+                                String profitString;
+                                if (profit == (long) profit) {
+                                    profitString = String.format("%s", (long) profit);
+                                }else {
+                                    profitString = String.format("%.2f", profit);
+                                }
+                                TextView itemProfit = rootView.findViewById(R.id.item_profit);
+                                itemProfit.setText("Прибыль:  " + profitString + " " + CurrencyData.getCurrencyChar());
                             }
+                        }catch (NumberFormatException e) {
+
                         }
-                    });
-                }else {
-                    EditText editText = (EditText) viewSwitcher.getCurrentView();
-                    try {
-                        if (editText.getText().toString() != "") {
-                            int i = Integer.parseInt(editText.getText().toString());
-                            ((TextView) viewSwitcher.findViewById(R.id.item_amount)).setText(Integer.toString(i));
-                        }
-                    }catch (Exception e) {
-                        text = (String) ((TextView) viewSwitcher.findViewById(R.id.item_amount)).getText();
+                        return true;
+                    }else {
+                        return false;
                     }
+                });
+            }else {
+                EditText editText = (EditText) viewSwitcher.getCurrentView();
+                try {
+                    if (!editText.getText().toString().equals("")) {
+                        int i = Integer.parseInt(editText.getText().toString());
+                        ((TextView) viewSwitcher.findViewById(R.id.item_amount)).setText(Integer.toString(i));
+                    }
+                }catch (Exception e) {
+                    text = (String) ((TextView) viewSwitcher.findViewById(R.id.item_amount)).getText();
                 }
-                viewSwitcher.showNext();
-                if (viewSwitcher.getCurrentView() instanceof EditText) {
-                    EditText ed = ((EditText) viewSwitcher.getCurrentView());
-                    ed.requestFocus();
-                    ed.setSelection(ed.getText().length());
-                }
+            }
+            viewSwitcher.showNext();
+            if (viewSwitcher.getCurrentView() instanceof EditText) {
+                EditText ed = ((EditText) viewSwitcher.getCurrentView());
+                ed.requestFocus();
+                ed.setSelection(ed.getText().length());
             }
         });
-        Button steamItemDeleteButton = (Button) rootView.findViewById(R.id.item_delete_button);
-        steamItemDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.deleteSelectedItem(chosenSteamItem);
-                dismiss();
-            }
+        Button steamItemDeleteButton = rootView.findViewById(R.id.item_delete_button);
+        steamItemDeleteButton.setOnClickListener(v -> {
+            MainActivity.deleteSelectedItem(chosenSteamItem);
+            dismiss();
         });
         return rootView;
     }
