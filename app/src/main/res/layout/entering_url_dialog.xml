@@ -1,101 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/entering_url_dialog_round_corners">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/entering_url_dialog_round_corners">
 
-        <TextView
-            android:layout_marginTop="7dp"
-            android:layout_width="272dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/addingItem"
-            android:textColor="@color/white"
-            android:gravity="center_horizontal"
-            android:textSize="22sp"/>
-        <EditText
-            android:inputType="text"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_width="272dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/itemLink"
-            android:background="@drawable/edt_bg_selector"
-            android:textColorHint="@color/gray"
-            android:textColor="@color/white"
-            android:id="@+id/entered_url"
-            android:gravity="start"
-            android:textSize="17sp"
-            android:nextFocusDown="@id/entered_price"
-            android:singleLine="true"/>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:inputType="number"
-                android:background="@drawable/edt_bg_selector"
-                android:layout_marginTop="10dp"
-                android:layout_marginStart="6dp"
-                android:layout_width="272dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/inventoryWorth"
-                android:textColorHint="@color/gray"
-                android:textColor="@color/white"
-                android:id="@+id/entered_price"
-                android:gravity="start"
-                android:textSize="17sp"
-                android:nextFocusDown="@id/entered_amount"
-                android:singleLine="true"/>
+    <TextView
+        android:id="@+id/adding_item_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="7dp"
+        android:text="@string/addingItem"
+        android:textColor="@color/white"
+        android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_marginTop="12dp"
-                android:id="@+id/currencyText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/white"
-                android:gravity="start"
-                android:textSize="17sp"
-                android:layout_marginEnd="6dp"/>
-        </LinearLayout>
+    <EditText
+        android:id="@+id/entered_url"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/edt_bg_selector"
+        android:gravity="start"
+        android:hint="@string/itemLink"
+        android:inputType="textUri"
+        android:nextFocusDown="@id/entered_price"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/adding_item_text" />
 
-        <EditText
-            android:inputType="number"
-            android:background="@drawable/edt_bg_selector"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="6dp"
-            android:layout_marginRight="6dp"
-            android:layout_width="272dp"
-            android:layout_height="wrap_content"
-            android:hint="@string/numberOfItems"
-            android:textColorHint="@color/gray"
-            android:textColor="@color/white"
-            android:id="@+id/entered_amount"
-            android:gravity="start"
-            android:textSize="17sp"
-            android:singleLine="true"/>
+    <EditText
+        android:id="@+id/entered_price"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/edt_bg_selector"
+        android:gravity="start"
+        android:hint="@string/inventoryWorth"
+        android:inputType="number"
+        android:nextFocusDown="@id/entered_amount"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/entered_url" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/currencyText"
+        app:layout_constraintTop_toTopOf="@id/entered_price"
+        app:layout_constraintStart_toEndOf="@id/entered_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/cancel_dialog_button"
-                style="@style/WhiteBorderlessButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cancel" />
 
-            <Button
-                android:id="@+id/accept_dialog_button"
-                style="@style/WhiteBorderlessButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/accept" />
-        </LinearLayout>
-    </LinearLayout>
+    <EditText
+        android:id="@+id/entered_amount"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/edt_bg_selector"
+        android:gravity="start"
+        android:hint="@string/numberOfItems"
+        android:inputType="number"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="@color/gray"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/entered_price" />
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@id/entered_amount"
+        app:layout_constraintEnd_toStartOf="@id/accept_dialog_button"
+        android:id="@+id/cancel_dialog_button"
+        android:layout_marginTop="8dp"
+        style="@style/WhiteBorderlessButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/cancel" />
+
+    <Button
+        app:layout_constraintTop_toBottomOf="@id/entered_amount"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/accept_dialog_button"
+        android:layout_marginTop="8dp"
+        style="@style/WhiteBorderlessButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/accept" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

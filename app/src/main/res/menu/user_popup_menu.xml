@@ -2,10 +2,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/add_steamItem"
-        android:title="Добавить предмет">
+        android:title="@string/add_item_text">
     </item>
     <item
         android:id="@+id/open_settings"
-        android:title="Настройки"
+        android:title="@string/settings_text"
     />
 </menu>

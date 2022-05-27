@@ -11,4 +11,6 @@
     <string name="priceOfBuying">Цена покупки:</string>
     <string name="numberOfItemsColon">Количество:</string>
     <string name="delete">Удалить</string>
+    <string name="add_item_text">Добавить предмет</string>
+    <string name="settings_text">Настройки</string>
 </resources>
