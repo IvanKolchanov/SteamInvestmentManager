@@ -2,14 +2,12 @@ package com.example.steaminvestmentmanager.utilclasses;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
-
 import java.io.InputStream;
 import java.util.concurrent.Callable;
 
 public class DownloadBitmapImage implements Callable<Bitmap> {
-    private String itemIconURL;
-    private String size;
+    private final String itemIconURL;
+    private final String size;
     public DownloadBitmapImage(String itemIconURL, String size) {
         this.itemIconURL = itemIconURL;
         this.size = size;
@@ -17,12 +15,12 @@ public class DownloadBitmapImage implements Callable<Bitmap> {
 
     @Override
     public Bitmap call() {
-        Bitmap mIcon11 = null;
+        Bitmap icon = null;
         try {
             InputStream in = new java.net.URL(itemIconURL + size).openStream();
-            mIcon11 = BitmapFactory.decodeStream(in);
-        } catch (Exception e) {
+            icon = BitmapFactory.decodeStream(in);
+        } catch (Exception ignored) {
         }
-        return mIcon11;
+        return icon;
     }
 }

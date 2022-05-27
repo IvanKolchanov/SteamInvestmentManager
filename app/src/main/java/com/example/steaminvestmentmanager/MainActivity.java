@@ -33,6 +33,8 @@ import android.widget.PopupWindow;
 import android.widget.Toast;
 
 import com.example.steaminvestmentmanager.utilclasses.*;
+
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Timer;
@@ -41,7 +43,7 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity {
     private static ArrayList<SteamItem> steamItems = new ArrayList<>();
     private ListView steamItemsListView;
-    private MainActivity mainActivity = this;
+    private final MainActivity mainActivity = this;
     private final String preferenceName = "savedData";
 
 

@@ -4,10 +4,10 @@ import android.graphics.Bitmap;
 
 
 public class SteamItem {
-    private String market_hash_name;
+    private final String market_hash_name;
     private String lowest_price;
-    private String itemIconURL;
-    private String appid;
+    private final String itemIconURL;
+    private final String appid;
     private Bitmap itemIcon;
     private String starterPrice;
     private int amount;
@@ -93,7 +93,7 @@ public class SteamItem {
 
     public boolean checkForBeingFull() {
         if ((market_hash_name != null) && (itemIconURL != null) && (appid != null) && (starterPrice != null)) {
-            return !market_hash_name.equals("") && (!itemIconURL.equals("")) && (!appid.equals("")) && (!starterPrice.equals("")) && (amount >= 0) && (firstInitializationCurrency >= 0);
+            return !market_hash_name.equals("") && !itemIconURL.equals("") && !appid.equals("") && !starterPrice.equals("") && (amount >= 0) && (firstInitializationCurrency >= 0);
         }
         return false;
     }

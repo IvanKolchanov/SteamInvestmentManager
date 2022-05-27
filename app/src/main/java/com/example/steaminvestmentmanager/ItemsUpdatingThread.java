@@ -28,10 +28,10 @@ public class ItemsUpdatingThread extends Thread {
                     if (steamItem.getItemIcon() == null) {
                         steamItem.downloadItemIconAgain();
                     }
+                    String priceoverviewURL = steamGetURLCreator.getURL(steamItem, true);
+                    String jsonPriceoverviewSteamItem = new DownloadingPageHtmlCode(priceoverviewURL).call();
+                    PriceoverviewSteamItem priceoverviewSteamItem = gson.fromJson(jsonPriceoverviewSteamItem, PriceoverviewSteamItem.class);
                     if (!CurrencyData.getCurrencyChar().equals(CurrencyData.getSpecificCurrencyChar(steamItem.getFirstInitializationCurrency()))) {
-                        String priceoverviewURL = steamGetURLCreator.getURL(steamItem, true);
-                        String jsonPriceoverviewSteamItem = new DownloadingPageHtmlCode(priceoverviewURL).call();
-                        PriceoverviewSteamItem priceoverviewSteamItem = gson.fromJson(jsonPriceoverviewSteamItem, PriceoverviewSteamItem.class);
                         if (priceoverviewSteamItem.isSuccess()) {
                             steamItem.setLowest_price(priceoverviewSteamItem.getLowest_price());
                         }
@@ -47,9 +47,6 @@ public class ItemsUpdatingThread extends Thread {
                             steamItem.setFirstInitializationCurrencyLowestPrice(priceoverviewRightCurrencySteamItem.getLowest_price());
                         }
                     } else {
-                        String priceoverviewURL = steamGetURLCreator.getURL(steamItem, true);
-                        String jsonPriceoverviewSteamItem = new DownloadingPageHtmlCode(priceoverviewURL).call();
-                        PriceoverviewSteamItem priceoverviewSteamItem = gson.fromJson(jsonPriceoverviewSteamItem, PriceoverviewSteamItem.class);
                         if (priceoverviewSteamItem.isSuccess()) {
                             steamItem.setLowest_price(priceoverviewSteamItem.getLowest_price());
                             steamItem.setFirstInitializationCurrencyLowestPrice(priceoverviewSteamItem.getLowest_price());

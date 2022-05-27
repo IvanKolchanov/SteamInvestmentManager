@@ -12,5 +12,4 @@ public class SteamItemsListViewData {
     public static void setMainActivityContext(Context mainActivityContext) {
         SteamItemsListViewData.mainActivityContext = mainActivityContext;
     }
-
 }

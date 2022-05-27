@@ -1,24 +1,16 @@
 package com.example.steaminvestmentmanager;
 
-import android.graphics.Bitmap;
-
-import com.example.steaminvestmentmanager.utilclasses.DownloadBitmapImage;
 import com.example.steaminvestmentmanager.utilclasses.DownloadingPageHtmlCode;
 import com.example.steaminvestmentmanager.utilclasses.SteamItem;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-
 import java.util.Scanner;
 
 public class ItemAddingThread extends Thread{
-    private SteamItem addingItem;
-    private String steamItemURL;
+    private final String steamItemURL;
     private String content;
-    private String appid;
     private String market_hash_name;
     private String icon_url = "https://community.cloudflare.steamstatic.com/economy/image/";
-    private Bitmap steamItemIcon = null;
-    private String enteredAmount, enteredPrice;
+    private final String enteredAmount;
+    private final String enteredPrice;
     private final int WRONG_WORD = 0, MARKET_HASH_NAME = 2, ICON_URL = 1;
 
     @Override
@@ -40,7 +32,7 @@ public class ItemAddingThread extends Thread{
 
     private void createSteamItem() {
         String[] urlArray = steamItemURL.split("/");
-        appid = urlArray[5];
+        String appid = urlArray[5];
         Scanner cin = new Scanner(content);
         boolean isFound = false;
         String g_rgAssetsLine = "";
@@ -57,7 +49,7 @@ public class ItemAddingThread extends Thread{
         cin.close();
         char[] g_rgAssetsLineArray = g_rgAssetsLine.toCharArray();
         processRgAssets(g_rgAssetsLineArray);
-        addingItem = new SteamItem(market_hash_name, appid, icon_url, enteredPrice, enteredAmount);
+        SteamItem addingItem = new SteamItem(market_hash_name, appid, icon_url, enteredPrice, enteredAmount);
         MainActivity.sendNewSteamItem(addingItem);
     }
 

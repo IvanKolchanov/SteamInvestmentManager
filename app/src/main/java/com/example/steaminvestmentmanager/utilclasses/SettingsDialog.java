@@ -9,14 +9,10 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-
-import com.example.steaminvestmentmanager.MainActivity;
 import com.example.steaminvestmentmanager.R;
-
 import java.util.Objects;
 
 public class SettingsDialog extends DialogFragment {

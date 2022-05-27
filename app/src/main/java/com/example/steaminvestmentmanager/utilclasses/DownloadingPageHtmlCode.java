@@ -6,8 +6,7 @@ import java.util.Scanner;
 import java.util.concurrent.Callable;
 
 public class DownloadingPageHtmlCode implements Callable<String> {
-    private String htmlPageUrl;
-    private String content;
+    private final String htmlPageUrl;
 
     public DownloadingPageHtmlCode(String htmlPageUrl) {
         this.htmlPageUrl = htmlPageUrl;
@@ -15,7 +14,7 @@ public class DownloadingPageHtmlCode implements Callable<String> {
 
     @Override
     public String call(){
-        content = null;
+        String content = null;
         URLConnection connection;
         try {
             connection =  new URL(htmlPageUrl).openConnection();
@@ -23,8 +22,7 @@ public class DownloadingPageHtmlCode implements Callable<String> {
             scanner.useDelimiter("\\Z");
             content = scanner.next();
             scanner.close();
-        }catch ( Exception ex ) {
-            ex.printStackTrace();
+        }catch ( Exception ignored) {
         }
         return content;
     }

@@ -1,37 +1,24 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CurrencyData {
     private static int currency;
+    private static String[] currencies = new String[]{"$", "$", "£", "€", "", "руб."};
 
     public static String getCurrencyChar() {
-        switch (currency) {
-            case 3:
-                return "€";
-            case 2:
-                return "£";
-            case 1:
-            case 0:
-                return "$";
-            case 5:
-            default:
-                return "руб.";
+        try {
+            return currencies[currency];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "$";
         }
     }
 
     public static String getSpecificCurrencyChar(int currency) {
-        switch (currency) {
-            case 3:
-                return "€";
-            case 2:
-                return "£";
-            case 1:
-            case 0:
-                return "$";
-            case 5:
-            default:
-                return "руб.";
+        try {
+            return currencies[currency];
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return "$";
         }
     }
 
@@ -40,27 +27,14 @@ public class CurrencyData {
     }
 
     public static String[] getCurrencyArray() {
-        ArrayList<String> currencyArrayList = new ArrayList<>();
-        currencyArrayList.add(getCurrencyChar());
-        for (int i = 0; i < 6; i++) {
-            if (!currencyArrayList.contains(getSpecificCurrencyChar(i))) {
-                currencyArrayList.add(getSpecificCurrencyChar(i));
-            }
-        }
-        return currencyArrayList.toArray(new String[0]);
+        return new String[] {"$", "£", "€", "руб."};
     }
 
-    public static int getCurrencyFromChar(String currencyChar) {
-        switch (currencyChar) {
-            case "$":
-                return 1;
-            case "£":
-                return 2;
-            case "€":
-                return 3;
-            default:
-                return 5;
+    public static int getCurrencyFromChar(String currencyString) {
+        for (int i = 0; i < currencies.length; i++) {
+            if (currencyString.equals(currencies[i])) return i;
         }
+        return 0;
     }
 
     public static void setCurrency(int currency) {

@@ -3,7 +3,6 @@ package com.example.steaminvestmentmanager.utilclasses;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Callable;
 
 public class SteamGetURLCreator {
     public String getURL(SteamItem steamItem, boolean isUserCurrency) {
