@@ -10,7 +10,7 @@ public class PriceoverviewSteamItem {
         return success;
     }
 
-    public String getLowest_price() {
+    public String getcurrentPrice() {
         return lowest_price;
     }
 }

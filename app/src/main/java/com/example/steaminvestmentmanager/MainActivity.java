@@ -1,44 +1,21 @@
 package com.example.steaminvestmentmanager;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-
 import com.google.gson.*;
-import android.app.Activity;
-import android.app.Dialog;
-import android.content.ClipData;
-import android.content.DialogInterface;
-import android.content.DialogInterface.*;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.ContextThemeWrapper;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
-import android.widget.PopupWindow;
-import android.widget.Toast;
-
 import com.example.steaminvestmentmanager.utilclasses.*;
-
-import java.io.Console;
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private static ArrayList<SteamItem> steamItems = new ArrayList<>();
@@ -85,9 +62,7 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(() -> {
             try {
                 steamItemsListView.setAdapter(steamItemAdapter);
-            }catch  (Exception e) {
-
-            }
+            }catch  (Exception ignored) { }
             steamItemsListView.setOnItemClickListener((parent, view, position, id) -> {
                 SteamItem steamItem = Objects.requireNonNull(getSteamItems())[position];
                 SteamItemInformationDialog steamItemInformationDialog = new SteamItemInformationDialog(steamItem);
@@ -149,8 +124,8 @@ public class MainActivity extends AppCompatActivity {
     public static void sendSteamItems(SteamItem[] steamItemArray) {
         if (steamItemArray != null) {
             for (int i = 0; i < steamItemArray.length; i++) {
-                steamItems.get(i).setFirstInitializationCurrencyLowestPrice(steamItemArray[i].getFirstInitializationCurrencyLowestPrice());
-                steamItems.get(i).setLowest_price(steamItemArray[i].getLowest_price());
+                steamItems.get(i).setcurrentCurrencyLowestPrice(steamItemArray[i].getcurrentCurrencyLowestPrice());
+                steamItems.get(i).setcurrentPrice(steamItemArray[i].getcurrentPrice());
             }
         }
     }

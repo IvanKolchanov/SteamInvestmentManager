@@ -22,14 +22,16 @@ public class SettingsDialog extends DialogFragment {
         View rootView = inflater.inflate(R.layout.settings_dialog, null);
         Objects.requireNonNull(getDialog()).getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         Spinner currencySpinner = rootView.findViewById(R.id.currencySpinner);
-        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(getContext(), R.layout.my_simple_spinner_item, CurrencyData.getCurrencyArray());
-        currencyAdapter.setDropDownViewResource(R.layout.my_simple_drop_down_item);
+        ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, CurrencyData.getCurrencyArray());
+        currencyAdapter.setDropDownViewResource(R.layout.drop_down_item);
         currencySpinner.setAdapter(currencyAdapter);
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 int newCurrency = CurrencyData.getCurrencyFromChar(CurrencyData.getCurrencyArray()[position]);
-                CurrencyData.setCurrency(newCurrency);
+                new Thread(() -> {
+                    CurrencyData.setCurrency(newCurrency);
+                }).start();
             }
 
             @Override

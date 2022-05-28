@@ -11,7 +11,7 @@ public class SteamGetURLCreator {
         if (isUserCurrency) {
             itemPriceoverviewURLBase += "&currency=" + CurrencyData.getCurrency();
         }else {
-            itemPriceoverviewURLBase += "&currency=" + steamItem.getFirstInitializationCurrency();
+            itemPriceoverviewURLBase += "&currency=" + steamItem.getcurrentCurrency();
         }
         String market_hash_name_encoded;
         try {

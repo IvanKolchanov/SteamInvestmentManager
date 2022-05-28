@@ -9,9 +9,8 @@ import com.google.gson.Gson;
 
 public class ItemsUpdatingThread extends Thread {
     private SteamItem[] steamItems;
-    private boolean isFirstRun = true;
-    private Gson gson = new Gson();
-    private MainActivity mainActivity;
+    private final Gson gson = new Gson();
+    private final MainActivity mainActivity;
 
     public ItemsUpdatingThread(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
@@ -25,32 +24,12 @@ public class ItemsUpdatingThread extends Thread {
             Context mainActivityContext = SteamItemsListViewData.getMainActivityContext();
             if (steamItems != null) {
                 for (SteamItem steamItem : steamItems) {
-                    if (steamItem.getItemIcon() == null) {
-                        steamItem.downloadItemIconAgain();
-                    }
                     String priceoverviewURL = steamGetURLCreator.getURL(steamItem, true);
                     String jsonPriceoverviewSteamItem = new DownloadingPageHtmlCode(priceoverviewURL).call();
                     PriceoverviewSteamItem priceoverviewSteamItem = gson.fromJson(jsonPriceoverviewSteamItem, PriceoverviewSteamItem.class);
-                    if (!CurrencyData.getCurrencyChar().equals(CurrencyData.getSpecificCurrencyChar(steamItem.getFirstInitializationCurrency()))) {
-                        if (priceoverviewSteamItem.isSuccess()) {
-                            steamItem.setLowest_price(priceoverviewSteamItem.getLowest_price());
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        String priceoverviewRightCurrencyURL = steamGetURLCreator.getURL(steamItem, false);
-                        String jsonPriceoverviewSteamItemRightCurrency = new DownloadingPageHtmlCode(priceoverviewRightCurrencyURL).call();
-                        PriceoverviewSteamItem priceoverviewRightCurrencySteamItem = gson.fromJson(jsonPriceoverviewSteamItemRightCurrency, PriceoverviewSteamItem.class);
-                        if (priceoverviewRightCurrencySteamItem.isSuccess()) {
-                            steamItem.setFirstInitializationCurrencyLowestPrice(priceoverviewRightCurrencySteamItem.getLowest_price());
-                        }
-                    } else {
-                        if (priceoverviewSteamItem.isSuccess()) {
-                            steamItem.setLowest_price(priceoverviewSteamItem.getLowest_price());
-                            steamItem.setFirstInitializationCurrencyLowestPrice(priceoverviewSteamItem.getLowest_price());
-                        }
+                    if (priceoverviewSteamItem.isSuccess()) {
+                        steamItem.setcurrentPrice(CurrencyData.transformPriceToNumber(priceoverviewSteamItem.getcurrentPrice()));
+                        steamItem.setcurrentCurrencyLowestPrice(priceoverviewSteamItem.getcurrentPrice());
                     }
                     MainActivity.sendSteamItems(steamItems);
                 }
@@ -62,7 +41,7 @@ public class ItemsUpdatingThread extends Thread {
                 try {
                     SteamItemAdapter steamItemAdapter = new SteamItemAdapter(mainActivityContext, MainActivity.getSteamItems());
                     mainActivity.setSteamItemsAdapter(steamItemAdapter);
-                }catch (Exception e) {
+                } catch (Exception e) {
 
                 }
 

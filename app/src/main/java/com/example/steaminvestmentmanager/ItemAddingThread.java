@@ -33,6 +33,7 @@ public class ItemAddingThread extends Thread{
     private void createSteamItem() {
         String[] urlArray = steamItemURL.split("/");
         String appid = urlArray[5];
+
         Scanner cin = new Scanner(content);
         boolean isFound = false;
         String g_rgAssetsLine = "";
@@ -75,7 +76,7 @@ public class ItemAddingThread extends Thread{
                                 break;
                         }
                         currentWord = "";
-                    } else if (isStillWord && c != '"') {
+                    } else if (isStillWord) {
                         currentWord += Character.toString(c);
                     }
                 } else {
@@ -95,7 +96,7 @@ public class ItemAddingThread extends Thread{
                         }
                         presentOperation = WRONG_WORD;
                         currentWord = "";
-                    } else if (isStillWord && c != '"') {
+                    } else if (isStillWord) {
                         currentWord += Character.toString(c);
                     }
                 }
