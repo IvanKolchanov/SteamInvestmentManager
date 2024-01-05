@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="360dp"
     android:layout_height="wrap_content"
     android:background="@drawable/steam_item_information_round_corners">
@@ -41,21 +40,21 @@
         app:layout_constraintTop_toBottomOf="@id/item_icon" />
 
     <TextView
-        android:layout_marginStart="8dp"
         android:id="@+id/currency"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/starter_price"
         android:textColor="@color/white"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@id/starter_price_text"
+        app:layout_constraintStart_toEndOf="@id/starter_price"
         app:layout_constraintTop_toTopOf="@id/starter_price_text" />
 
     <ViewSwitcher
+        android:layout_marginStart="8dp"
         android:id="@+id/starter_price"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/currency"
+        app:layout_constraintStart_toEndOf="@id/starter_price_text"
         app:layout_constraintTop_toTopOf="@id/starter_price_text">
 
         <EditText
@@ -65,7 +64,7 @@
             android:background="@drawable/edt_bg_selector"
             android:layout_marginBottom="4dp"
             android:focusable="true"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textSize="20sp" />

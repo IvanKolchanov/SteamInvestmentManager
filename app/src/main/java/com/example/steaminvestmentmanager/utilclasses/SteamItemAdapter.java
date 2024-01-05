@@ -14,9 +14,12 @@ import androidx.core.content.ContextCompat;
 
 import com.example.steaminvestmentmanager.R;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
 
-    public SteamItemAdapter(Context context, SteamItem[] steamItems) {
+    public SteamItemAdapter(Context context, ArrayList<SteamItem> steamItems) {
         super(context, R.layout.list_item, steamItems);
     }
 
@@ -27,19 +30,20 @@ public class SteamItemAdapter extends ArrayAdapter<SteamItem> {
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.list_item, null);
         }
-        if (steamItem.getcurrentCurrencyLowestPrice() != null) {
+        if (steamItem.getCurrentCurrencyLowestPrice() != null) {
             ImageView itemIcon = convertView.findViewById(R.id.itemIcon);
-            itemIcon.setImageBitmap(steamItem.getItemIcon());
+            if (steamItem.getItemIcon() != null) itemIcon.setImageBitmap(steamItem.getItemIcon());
+
             TextView itemName = convertView.findViewById(R.id.itemName);
             itemName.setText(steamItem.getMarket_hash_name());
             TextView itemPercent = convertView.findViewById(R.id.itemPercent);
-            float buyingPrice = steamItem.getbuyingPrice(), currentPrice = steamItem.getcurrentPrice();
+            float buyingPrice = steamItem.getBuyingPrice(), currentPrice = steamItem.getCurrentPrice();
             String profitString;
             float percentage = currentPrice / buyingPrice;
             if (percentage == (long) percentage) {
                 profitString = String.format("%s", (long) percentage);
             } else {
-                profitString = String.format("%.2f", percentage);
+                profitString = String.format(Locale.US, "%.2f", percentage);
             }
 
             int finalPercentage = Math.round(Float.parseFloat(profitString.replace(",", ".")) * 100);

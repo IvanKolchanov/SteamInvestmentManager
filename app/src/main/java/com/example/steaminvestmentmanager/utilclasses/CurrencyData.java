@@ -2,25 +2,15 @@ package com.example.steaminvestmentmanager.utilclasses;
 
 import com.example.steaminvestmentmanager.MainActivity;
 import com.google.gson.Gson;
-
 import java.text.DecimalFormat;
-import java.util.ArrayList;
+
 
 public class CurrencyData {
     private static int currency = 0;
     private static final Gson gson = new Gson();
     private static final String[] currencies = new String[]{"$", "$", "£", "€", "", "руб."};
-    private static final String firstPartOfURL = "https://steamcommunity.com/market/priceoverview/?currency=", secondPartOfURL = "&country=us&appid=440&market_hash_name=Mann%20Co.%20Supply%20Crate%20Key&format=json";
 
     public static String getCurrencyChar() {
-        try {
-            return currencies[currency];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return "$";
-        }
-    }
-
-    public static String getSpecificCurrencyChar(int currency) {
         try {
             return currencies[currency];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -36,6 +26,13 @@ public class CurrencyData {
         return new String[] {"$", "£", "€", "руб."};
     }
 
+    public static int getCurrencyArrayPosition() {
+        for (int i = 0; i < getCurrencyArray().length; i++) {
+            if (getCurrencyArray()[i].equals(getCurrencyChar())) return i;
+        }
+        return -1;
+    }
+
     public static int getCurrencyFromChar(String currencyString) {
         for (int i = 0; i < currencies.length; i++) {
             if (currencyString.equals(currencies[i])) return i;
@@ -43,30 +40,43 @@ public class CurrencyData {
         return 0;
     }
 
+    public static void setInitialCurrency(int currency) {
+        CurrencyData.currency = currency;
+    }
+
     public static void setCurrency(int currency) {
         CurrencyData.currency = currency;
         SteamItem[] items = MainActivity.getSteamItems();
+        if (items == null) return;
         for (SteamItem item:
              items) {
-            float ration = getCurrencyToCurrency(item.getcurrentCurrency(), currency);
-            item.setbuyingPrice(Float.parseFloat(new DecimalFormat("#.##").format(item.getbuyingPrice() / ration).replace(',', '.')));
+            if (item == null) continue;
+            float ration = getCurrencyToCurrency(item.getCurrentCurrency(), currency);
+            item.setBuyingPrice(Float.parseFloat(new DecimalFormat("#.##").format(item.getBuyingPrice() / ration).replace(',', '.')));
+            item.setCurrentPrice(Float.parseFloat(new DecimalFormat("#.##").format(item.getCurrentPrice() / ration).replace(',', '.')));
+            item.setCurrentCurrency(currency);
         }
-        MainActivity.sendSteamItems(items);
+        ItemListUpdater.updateSteamItemAdapter();
     }
 
     public static float transformPriceToNumber(String price) {
-        price = price.replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "");
+        price = price.replaceAll("pуб.", "").replaceAll("\\$", "").replaceAll(",", ".").replaceAll("€", "").replaceAll("£", "").replaceAll("CHF", "");
         return Float.parseFloat(price);
     }
 
+    private static final String firstPartOfURL = "https://steamcommunity.com/market/priceoverview/?currency=", secondPartOfURL = "&country=us&appid=440&market_hash_name=Mann%20Co.%20Supply%20Crate%20Key&format=json";
+
     public static float getCurrencyToCurrency(int firstCurrency, int secondCurrency){
-        String convertationURL1 = firstPartOfURL + firstCurrency + secondPartOfURL;
-        String jsonPriceoverviewSteamItem1 = new DownloadingPageHtmlCode(convertationURL1).call();
-        PriceoverviewSteamItem priceoverviewSteamItem1 = gson.fromJson(jsonPriceoverviewSteamItem1, PriceoverviewSteamItem.class);
-        String convertationURL2 = firstPartOfURL + secondCurrency + secondPartOfURL;
-        String jsonPriceoverviewSteamItem2 = new DownloadingPageHtmlCode(convertationURL2).call();
-        PriceoverviewSteamItem priceoverviewSteamItem2 = gson.fromJson(jsonPriceoverviewSteamItem2, PriceoverviewSteamItem.class);
-        return transformPriceToNumber(priceoverviewSteamItem1.getcurrentPrice()) / transformPriceToNumber(priceoverviewSteamItem2.getcurrentPrice());
+        if (firstCurrency == secondCurrency) return 1.0f;
+        String convURL1 = firstPartOfURL + firstCurrency + secondPartOfURL;
+        String jsonSteamItem1 = new DownloadingPageHtmlCode(convURL1).call();
+        PriceoverviewSteamItem item1 = gson.fromJson(jsonSteamItem1, PriceoverviewSteamItem.class);
+
+        String convURL2 = firstPartOfURL + secondCurrency + secondPartOfURL;
+        String jsonSteamItem2 = new DownloadingPageHtmlCode(convURL2).call();
+        PriceoverviewSteamItem item2 = gson.fromJson(jsonSteamItem2, PriceoverviewSteamItem.class);
+        if (item1 == null || item2 == null) return -1;
+        return transformPriceToNumber(item1.getCurrentPrice()) / transformPriceToNumber(item2.getCurrentPrice());
     }
 
 }

@@ -25,6 +25,7 @@ public class SettingsDialog extends DialogFragment {
         ArrayAdapter<String> currencyAdapter = new ArrayAdapter<>(getContext(), R.layout.spinner_item, CurrencyData.getCurrencyArray());
         currencyAdapter.setDropDownViewResource(R.layout.drop_down_item);
         currencySpinner.setAdapter(currencyAdapter);
+        currencySpinner.setSelection(CurrencyData.getCurrencyArrayPosition());
         currencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

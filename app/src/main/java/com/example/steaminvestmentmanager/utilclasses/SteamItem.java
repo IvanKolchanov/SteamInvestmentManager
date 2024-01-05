@@ -1,9 +1,10 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
 import android.graphics.Bitmap;
-
+import com.google.gson.Gson;
 
 public class SteamItem {
+    private static final Gson gson = new Gson();
     private final String market_hash_name;
     private final String itemIconURL;
     private final String appid;
@@ -24,7 +25,21 @@ public class SteamItem {
         currentCurrency = CurrencyData.getCurrency();
     }
 
-    public void setbuyingPrice(Float buyingPrice) {
+    public void updateItemPrice() {
+        String priceURL = PriceURLCreator.getURL(this, true);
+        String jsonSteamItem = new DownloadingPageHtmlCode(priceURL).call();
+        PriceoverviewSteamItem priceoverviewSteamItem = gson.fromJson(jsonSteamItem, PriceoverviewSteamItem.class);
+        if (priceoverviewSteamItem.isSuccess()) {
+            this.setCurrentPrice(CurrencyData.transformPriceToNumber(priceoverviewSteamItem.getCurrentPrice()));
+            this.setCurrentCurrencyLowestPrice(priceoverviewSteamItem.getCurrentPrice());
+        }
+    }
+
+    public void updateIcon() {
+        itemIcon = new DownloadBitmapImage(this.getItemIconURL(), "/215fx215").call();
+    }
+
+    public void setBuyingPrice(Float buyingPrice) {
         this.buyingPrice = buyingPrice;
     }
 
@@ -32,7 +47,7 @@ public class SteamItem {
         return market_hash_name;
     }
 
-    public Float getcurrentPrice() {
+    public Float getCurrentPrice() {
         return currentPrice;
     }
 
@@ -52,7 +67,7 @@ public class SteamItem {
         return itemIconURL;
     }
 
-    public String getAppid() {
+    public String getAppID() {
         return appid;
     }
 
@@ -60,28 +75,28 @@ public class SteamItem {
         return amount;
     }
 
-    public void setcurrentCurrency(int currentCurrency) {
+    public void setCurrentCurrency(int currentCurrency) {
         this.currentCurrency = currentCurrency;
     }
 
-    public void setcurrentPrice(Float currentPrice) {
+    public void setCurrentPrice(Float currentPrice) {
         this.currentPrice = currentPrice;
     }
 
-    public int getcurrentCurrency() {
+    public int getCurrentCurrency() {
         return currentCurrency;
     }
 
-    public void setcurrentCurrencyLowestPrice(String currentCurrencyMedianPrice) {
+    public void setCurrentCurrencyLowestPrice(String currentCurrencyMedianPrice) {
         this.currentCurrencyMedianPrice = "";
         this.currentCurrencyMedianPrice += currentCurrencyMedianPrice;
     }
 
-    public String getcurrentCurrencyLowestPrice() {
+    public String getCurrentCurrencyLowestPrice() {
         return currentCurrencyMedianPrice;
     }
 
-    public Float getbuyingPrice() {
+    public Float getBuyingPrice() {
         return buyingPrice;
     }
 

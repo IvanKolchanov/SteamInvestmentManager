@@ -4,14 +4,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-public class SteamGetURLCreator {
-    public String getURL(SteamItem steamItem, boolean isUserCurrency) {
+public class PriceURLCreator {
+    public static String getURL(SteamItem steamItem, boolean isUserCurrency) {
         String itemPriceoverviewURLBase = "https://steamcommunity.com/market/priceoverview/?";
-        itemPriceoverviewURLBase += "appid=" + steamItem.getAppid();
+        itemPriceoverviewURLBase += "appid=" + steamItem.getAppID();
         if (isUserCurrency) {
             itemPriceoverviewURLBase += "&currency=" + CurrencyData.getCurrency();
         }else {
-            itemPriceoverviewURLBase += "&currency=" + steamItem.getcurrentCurrency();
+            itemPriceoverviewURLBase += "&currency=" + steamItem.getCurrentCurrency();
         }
         String market_hash_name_encoded;
         try {

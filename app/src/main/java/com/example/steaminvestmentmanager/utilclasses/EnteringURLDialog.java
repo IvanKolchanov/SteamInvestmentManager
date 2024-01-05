@@ -9,14 +9,23 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+
+import com.example.steaminvestmentmanager.ItemAddingThread;
 import com.example.steaminvestmentmanager.MainActivity;
 import com.example.steaminvestmentmanager.R;
+
 import java.util.Objects;
 
 public class EnteringURLDialog extends DialogFragment {
+
+    private final MainActivity mainActivity;
+    public EnteringURLDialog(MainActivity mainActivity) {
+        this.mainActivity = mainActivity;
+    }
 
     @Nullable
     @Override
@@ -33,9 +42,10 @@ public class EnteringURLDialog extends DialogFragment {
             String enteredPriceText = enteredPrice.getText().toString();
             String enteredAmountText = enteredAmount.getText().toString();
             try {
-                MainActivity.sendEnteredURL(enteredURLText, enteredPriceText, enteredAmountText);
+                ItemAddingThread itemAddingThread = new ItemAddingThread(enteredURLText, enteredPriceText, enteredAmountText, mainActivity);
+                itemAddingThread.start();
                 dismiss();
-            }catch (Exception e) {
+            } catch (Exception e) {
                 Toast.makeText(getContext(), "Неправильно введены данные", Toast.LENGTH_LONG).show();
             }
         });

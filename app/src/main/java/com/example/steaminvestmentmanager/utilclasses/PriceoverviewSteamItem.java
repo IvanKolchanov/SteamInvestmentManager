@@ -1,6 +1,7 @@
 package com.example.steaminvestmentmanager.utilclasses;
 
 public class PriceoverviewSteamItem {
+
     private boolean success;
     private String lowest_price;
     private String volume;
@@ -10,7 +11,7 @@ public class PriceoverviewSteamItem {
         return success;
     }
 
-    public String getcurrentPrice() {
+    public String getCurrentPrice() {
         return lowest_price;
     }
 }
