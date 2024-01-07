@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Steam Investment Manager</string>
+    <string name="title">SIM</string>
+    <string name="addingItem">Adding item</string>
+    <string name="itemLink">Item link</string>
+    <string name="inventoryWorth">Item price</string>
+    <string name="numberOfItems">Amount</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
+    <string name="choseCurrency">Chose currency:</string>
+    <string name="priceOfBuying">Buying price:</string>
+    <string name="numberOfItemsColon">Amount:</string>
+    <string name="delete">Delete</string>
+    <string name="add_item_text">Add item</string>
+    <string name="settings_text">Settings</string>
+    <string name="currency_exchange_rate_text">Exchange rates</string>
+    <string name="currency_exchange_dialog_title">Exchange rates:</string>
+    <string name="profit_text">Profit:</string>
+    <string name="current_price_text">Price:</string>
+    <string name="scan_account_items">Scan inventory</string>
+</resources>

@@ -2,10 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/add_steamItem"
-        android:title="@string/add_item_text">
-    </item>
+        android:title="@string/add_item_text" />
+    <item
+        android:id="@+id/currency_exchange_rate"
+        android:title="@string/currency_exchange_rate_text" />
+    <item
+        android:id="@+id/scan_account_items"
+        android:title="@string/scan_account_items"/>
     <item
         android:id="@+id/open_settings"
-        android:title="@string/settings_text"
-    />
+        android:title="@string/settings_text" />
 </menu>

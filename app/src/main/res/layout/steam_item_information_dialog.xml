@@ -23,6 +23,7 @@
         android:textSize="20sp"
         app:layout_constraintStart_toEndOf="@id/item_icon"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/item_icon"
         android:layout_width="204dp" />
 
 

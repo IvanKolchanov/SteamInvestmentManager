@@ -22,7 +22,7 @@ class SteamItem(val market_hash_name: String?, val appID: String?, val itemIconU
     fun updateItemPrice() {
         val priceURL = PriceURLCreator.getURL(this, true)
         val jsonSteamItem = DownloadingPageHtmlCode(priceURL).call()
-        val poSteamItem = gson.fromJson(jsonSteamItem, PriceoverviewSteamItem::class.java)
+        val poSteamItem = gson.fromJson(jsonSteamItem, PriceoverviewSteamItem::class.java) ?: return
         if (poSteamItem.success) {
             currentPrice = CurrencyData.transformPriceToNumber(poSteamItem.lowest_price)
         }else {

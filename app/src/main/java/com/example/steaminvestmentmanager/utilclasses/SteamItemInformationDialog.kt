@@ -60,7 +60,6 @@ class SteamItemInformationDialog(private val chosenSteamItem: SteamItem) : Dialo
                             setProfit(profitView, chosenSteamItem)
                             return@setOnKeyListener true
                         } catch (e: Exception) {
-                            Toast.makeText(context, "Неправельно введена цена", Toast.LENGTH_LONG).show()
                             return@setOnKeyListener false
                         }
                     } else {
@@ -88,7 +87,7 @@ class SteamItemInformationDialog(private val chosenSteamItem: SteamItem) : Dialo
 
         //установка нынешней цены
         val itemCurrentPrice = rootView.findViewById<TextView>(R.id.item_current_price)
-        itemCurrentPrice.text = "Нынешняя цена:  " + chosenSteamItem.currentPrice + CurrencyData.currencyChar
+        itemCurrentPrice.text = "${getString(R.string.current_price_text)}  " + chosenSteamItem.currentPrice + CurrencyData.currencyChar
 
         //установка и настройка редактирования amount
         val viewSwitcher = rootView.findViewById<ViewSwitcher>(R.id.amount)
@@ -111,14 +110,8 @@ class SteamItemInformationDialog(private val chosenSteamItem: SteamItem) : Dialo
                         try {
                             chosenSteamItem.amount = ("" + amountEditText.text).toInt()
                             itemAmountCurrentTextView.text = amountEditText.text
-                            val buyingPrice = chosenSteamItem.buyingPrice
-                            val currentPrice = chosenSteamItem.currentPrice
-                            val itemProfit = rootView.findViewById<TextView>(R.id.item_profit)
-                            var profit = ((currentPrice - buyingPrice) * chosenSteamItem.amount).toString()
-                            profit = String.format("%s", profit.toFloat().toLong())
-                            itemProfit.text = "Прибыль:  " + profit + " " + CurrencyData.currencyChar
-                        } catch (e: NumberFormatException) {
-                        }
+                            setProfit(rootView.findViewById<TextView>(R.id.item_profit), chosenSteamItem)
+                        } catch (e: NumberFormatException) { }
                         return@setOnKeyListener true
                     } else {
                         return@setOnKeyListener false
@@ -164,8 +157,7 @@ class SteamItemInformationDialog(private val chosenSteamItem: SteamItem) : Dialo
     private fun setProfit(itemProfit: TextView, chosenSteamItem: SteamItem) {
         val buyingPrice = chosenSteamItem.buyingPrice
         val currentPrice = chosenSteamItem.currentPrice
-        var profit = ((currentPrice - buyingPrice) * chosenSteamItem.amount).toString()
-        String.format("%s", profit.toFloat().toLong())
-        itemProfit.text = "Прибыль:  " + profit + CurrencyData.currencyChar
+        var profit = ((currentPrice - buyingPrice) * chosenSteamItem.amount)
+        itemProfit.text = "${getString(R.string.profit_text)}  ${String.format("%.2f", profit)}${CurrencyData.currencyChar}"
     }
 }

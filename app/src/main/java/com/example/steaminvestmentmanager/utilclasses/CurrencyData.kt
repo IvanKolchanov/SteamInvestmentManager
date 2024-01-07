@@ -1,5 +1,6 @@
 package com.example.steaminvestmentmanager.utilclasses
 
+import android.util.Log
 import com.example.steaminvestmentmanager.MainActivity.Companion.getSteamItems
 import com.google.gson.Gson
 import java.text.DecimalFormat
@@ -7,7 +8,22 @@ import java.text.DecimalFormat
 object CurrencyData {
     private var currency = 0
     private val gson = Gson()
-    private val currencies = arrayOf("$", "$", "£", "€", "", "руб.")
+    private val currencies = arrayOf("$", "$", "£", "€", "CHF", "₽")
+
+    var exchangeRatios = HashMap<Int, Float>()
+
+    fun updateExchangeRatios() {
+        for (i in currencyArray) {
+            if (currencyChar != i) {
+                Log.d("SteamIvan", "$i $currencyChar")
+                val iPos = getCurrencyFromChar(i)
+                if (i != null) {
+                    exchangeRatios[iPos] = getCurrencyToCurrency(0, iPos)
+                }
+            }
+        }
+    }
+
     val currencyChar: String
         get() = try {
             currencies[currency]
@@ -20,7 +36,7 @@ object CurrencyData {
     }
 
     val currencyArray: Array<String?>
-        get() = arrayOf("$", "£", "€", "руб.")
+        get() = arrayOf("$", "£", "€", "₽")
     val currencyArrayPosition: Int
         get() {
             for (i in currencyArray.indices) {
@@ -44,9 +60,9 @@ object CurrencyData {
         CurrencyData.currency = currency
         val items = getSteamItems()
         for (item in items) {
-            val ration = getCurrencyToCurrency(item.currentCurrency, currency)
-            item.buyingPrice = DecimalFormat("#.##").format((item.buyingPrice / ration).toDouble()).replace(',', '.').toFloat()
-            item.currentPrice = DecimalFormat("#.##").format((item.currentPrice / ration).toDouble()).replace(',', '.').toFloat()
+            val ratio = exchangeRatios[item.currentCurrency]?.div(exchangeRatios[currency]!!)
+            item.buyingPrice = DecimalFormat("#.##").format((item.buyingPrice * ratio!!).toDouble()).replace(',', '.').toFloat()
+            item.currentPrice = DecimalFormat("#.##").format((item.currentPrice * ratio).toDouble()).replace(',', '.').toFloat()
             item.currentCurrency = currency
         }
         ItemListUpdater.updateSteamItemAdapter()
@@ -58,7 +74,7 @@ object CurrencyData {
 
     private const val firstPartOfURL = "https://steamcommunity.com/market/priceoverview/?currency="
     private const val secondPartOfURL = "&country=us&appid=440&market_hash_name=Mann%20Co.%20Supply%20Crate%20Key&format=json"
-    private fun getCurrencyToCurrency(firstCurrency: Int, secondCurrency: Int): Float {
+    fun getCurrencyToCurrency(firstCurrency: Int, secondCurrency: Int): Float {
         if (firstCurrency == secondCurrency) return 1.0f
         val convURL1 = firstPartOfURL + firstCurrency + secondPartOfURL
         val jsonSteamItem1 = DownloadingPageHtmlCode(convURL1).call()
@@ -66,6 +82,8 @@ object CurrencyData {
         val convURL2 = firstPartOfURL + secondCurrency + secondPartOfURL
         val jsonSteamItem2 = DownloadingPageHtmlCode(convURL2).call()
         val item2 = gson.fromJson(jsonSteamItem2, PriceoverviewSteamItem::class.java)
-        return if (item1 == null || item2 == null) (-1).toFloat() else transformPriceToNumber(item1.lowest_price) / transformPriceToNumber(item2.lowest_price)
+        return if (item1 == null || item2 == null) (-1.0f) else transformPriceToNumber(item1.lowest_price) / transformPriceToNumber(item2.lowest_price)
     }
+
+
 }

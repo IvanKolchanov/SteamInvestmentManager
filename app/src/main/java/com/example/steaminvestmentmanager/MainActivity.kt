@@ -14,6 +14,7 @@ import android.widget.PopupMenu
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.steaminvestmentmanager.utilclasses.CurrencyData
+import com.example.steaminvestmentmanager.utilclasses.CurrencyExchangeDialog
 import com.example.steaminvestmentmanager.utilclasses.EnteringURLDialog
 import com.example.steaminvestmentmanager.utilclasses.ItemListUpdater
 import com.example.steaminvestmentmanager.utilclasses.SettingsDialog
@@ -27,27 +28,37 @@ class MainActivity : AppCompatActivity() {
     private var steamItemsListView: ListView? = null
     private val preferenceName = "savedDataSIM"
     private val TAG = "SteamIvan"
+    private val itemsUpdatingThread = ItemsUpdatingThread()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(findViewById(R.id.toolbar))
         steamItemsListView = findViewById(R.id.itemListView)
         steamItemAdapter = SteamItemAdapter(applicationContext, ArrayList())
         setSteamItemsAdapter(steamItemAdapter)
+
+        Thread {CurrencyData.updateExchangeRatios()}.start()
+        for (i in CurrencyData.exchangeRatios.values) {
+            Log.d("SteamIvan", "$i AAA")
+        }
+
         try {
             retrieveItemsFromPreference()
         } catch (e: Exception) {
             Log.d(TAG, "onCreate: $e")
         }
         ItemListUpdater.mainActivity = this
-        val itemsUpdatingThread = ItemsUpdatingThread()
         itemsUpdatingThread.start()
     }
 
     override fun onStop() {
         saveSteamItems()
         super.onStop()
+    }
+
+    override fun onResume() {
+        Thread {CurrencyData.updateExchangeRatios()}.start()
+        super.onResume()
     }
 
     private fun setSteamItemsAdapter(steamItemAdapter: SteamItemAdapter?) {
@@ -90,7 +101,18 @@ class MainActivity : AppCompatActivity() {
                 settingsDialog.show(supportFragmentManager, null)
                 return@setOnMenuItemClickListener true
             }
+            if (item.itemId == R.id.currency_exchange_rate) {
+                val currencyExchangeDialog = CurrencyExchangeDialog()
+                currencyExchangeDialog.show(supportFragmentManager, null)
+                return@setOnMenuItemClickListener true
+            }
+            if (item.itemId == R.id.scan_account_items) {
+                itemsUpdatingThread.pauseThread()
+                Thread {
 
+                }
+                return@setOnMenuItemClickListener true
+            }
             false
         }
         popupMenu.show()
