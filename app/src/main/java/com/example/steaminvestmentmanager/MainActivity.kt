@@ -22,6 +22,8 @@ import com.example.steaminvestmentmanager.utilclasses.SteamItem
 import com.example.steaminvestmentmanager.utilclasses.SteamItemAdapter
 import com.example.steaminvestmentmanager.utilclasses.SteamItemInformationDialog
 import com.google.gson.Gson
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import java.util.Objects
 
 class MainActivity : AppCompatActivity() {
@@ -38,9 +40,6 @@ class MainActivity : AppCompatActivity() {
         setSteamItemsAdapter(steamItemAdapter)
 
         Thread {CurrencyData.updateExchangeRatios()}.start()
-        for (i in CurrencyData.exchangeRatios.values) {
-            Log.d("SteamIvan", "$i AAA")
-        }
 
         try {
             retrieveItemsFromPreference()
@@ -109,8 +108,13 @@ class MainActivity : AppCompatActivity() {
             if (item.itemId == R.id.scan_account_items) {
                 itemsUpdatingThread.pauseThread()
                 Thread {
-
-                }
+                    var doc: Document? = null
+                    try {
+                        doc = Jsoup.connect("https://steamcommunity.com/profiles/76561198368700794/inventory/json/730/2").get()
+                    }catch (e: Exception) {}
+                    Log.d("SteamIvanDoc", doc.toString())
+                }.start()
+                itemsUpdatingThread.resumeThread()
                 return@setOnMenuItemClickListener true
             }
             false
@@ -137,12 +141,12 @@ class MainActivity : AppCompatActivity() {
                 if (currentSteamItem != null && currentSteamItem.checkForBeingFull()) {
                     Thread { currentSteamItem.updateIcon(); }.start()
                     steamItems.add(currentSteamItem)
-                    Log.d("SteamIvan", steamItems.toString())
                     steamItemAdapter!!.add(currentSteamItem)
                 }
             }
         }
         val userCurrency = sharedPreferences.getInt("USER_CURRENCY", 5)
+        CurrencyExchangeDialog.exchangeModeDefault = sharedPreferences.getBoolean("USER_EXCHANGE_MODE", true)
         CurrencyData.setInitialCurrency(userCurrency)
     }
 
@@ -157,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         }
         preferenceEditor.putInt("NUMBER_OF_STEAM_ITEMS", steamItems.size)
         preferenceEditor.putInt("USER_CURRENCY", CurrencyData.getCurrency())
+        preferenceEditor.putBoolean("USER_EXCHANGE_MODE", CurrencyExchangeDialog.exchangeModeDefault)
         preferenceEditor.apply()
     }
 

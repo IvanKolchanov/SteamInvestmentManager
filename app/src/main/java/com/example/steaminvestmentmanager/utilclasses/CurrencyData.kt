@@ -12,14 +12,16 @@ object CurrencyData {
 
     var exchangeRatios = HashMap<Int, Float>()
 
+    init {
+        exchangeRatios[0] = 1.0f
+    }
+
     fun updateExchangeRatios() {
         for (i in currencyArray) {
-            if (currencyChar != i) {
-                Log.d("SteamIvan", "$i $currencyChar")
+            if (!i.equals("$")) {
                 val iPos = getCurrencyFromChar(i)
-                if (i != null) {
-                    exchangeRatios[iPos] = getCurrencyToCurrency(0, iPos)
-                }
+                Log.d("SteamIvan", "$i")
+                exchangeRatios[iPos] = getCurrencyToCurrency(0, iPos)
             }
         }
     }
@@ -79,6 +81,7 @@ object CurrencyData {
         val convURL1 = firstPartOfURL + firstCurrency + secondPartOfURL
         val jsonSteamItem1 = DownloadingPageHtmlCode(convURL1).call()
         val item1 = gson.fromJson(jsonSteamItem1, PriceoverviewSteamItem::class.java)
+
         val convURL2 = firstPartOfURL + secondCurrency + secondPartOfURL
         val jsonSteamItem2 = DownloadingPageHtmlCode(convURL2).call()
         val item2 = gson.fromJson(jsonSteamItem2, PriceoverviewSteamItem::class.java)

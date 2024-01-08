@@ -28,7 +28,6 @@ class SteamItemAdapter(context: Context?, steamItems: ArrayList<SteamItem?>?) : 
             val currentPrice = steamItem.currentPrice
             val profitString: String
             val percentage = currentPrice / buyingPrice
-            Log.d("SteamIvan", steamItem.toString())
             profitString = percentage.toString()
             val finalPercentage = (profitString.replace(",", ".").toFloat() * 100).roundToInt()
             itemPercent.text = "$finalPercentage%"

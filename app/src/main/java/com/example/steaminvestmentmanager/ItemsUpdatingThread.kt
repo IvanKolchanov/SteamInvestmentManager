@@ -13,6 +13,7 @@ class ItemsUpdatingThread : Thread() {
                 if (steamItem.itemIcon == null) {
                     steamItem.updateIcon()
                 }
+
                 steamItem.updateItemPrice()
                 ItemListUpdater.updateSteamItemAdapter()
             }

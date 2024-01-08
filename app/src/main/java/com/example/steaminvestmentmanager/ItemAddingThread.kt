@@ -3,7 +3,7 @@ package com.example.steaminvestmentmanager
 import android.util.Log
 import com.example.steaminvestmentmanager.utilclasses.DownloadingPageHtmlCode
 import com.example.steaminvestmentmanager.utilclasses.SteamItem
-import java.util.Scanner
+import org.jsoup.Jsoup
 
 class ItemAddingThread(private val steamItemURL: String, private val enteredPrice: String, private val enteredAmount: String, private val mainActivity: MainActivity) : Thread() {
     private var content: String? = null
@@ -23,7 +23,7 @@ class ItemAddingThread(private val steamItemURL: String, private val enteredPric
     private fun createSteamItem() {
         val urlArray = steamItemURL.split("/".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
         val appid = urlArray[5]
-        val cin = Scanner(content)
+        /*val cin = Scanner(content)
         var isFound = false
         var g_rgAssetsLine = ""
         while (!isFound && cin.hasNext()) {
@@ -38,9 +38,18 @@ class ItemAddingThread(private val steamItemURL: String, private val enteredPric
         }
         cin.close()
         val g_rgAssetsLineArray = g_rgAssetsLine.toCharArray()
-        processRgAssets(g_rgAssetsLineArray)
+        processRgAssets(g_rgAssetsLineArray)*/
+
+        val doc = content?.let { Jsoup.parse(it) }
+        if (doc != null) {
+            for (element in doc.getElementsByTag("script")) {
+                if (element.data().contains("market_hash_name")) {
+                    processRgAssets(element.data().toCharArray())
+                }
+            }
+        }
+
         val addingItem = SteamItem(market_hash_name, appid, icon_url, enteredPrice, enteredAmount)
-        Log.d("SteamIvan", addingItem.toString() + "")
         mainActivity.sendNewSteamItem(addingItem)
     }
 

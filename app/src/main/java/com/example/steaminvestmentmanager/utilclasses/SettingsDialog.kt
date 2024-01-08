@@ -25,7 +25,7 @@ class SettingsDialog : DialogFragment() {
         currencySpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View, position: Int, id: Long) {
                 val newCurrency = CurrencyData.getCurrencyFromChar(CurrencyData.currencyArray[position])
-                Thread { CurrencyData.setCurrency(newCurrency) }.start()
+                CurrencyData.setCurrency(newCurrency)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
